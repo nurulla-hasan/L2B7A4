@@ -5,6 +5,7 @@ import config from './config'
 import cookieParser from 'cookie-parser';
 import { globalErrorHandler } from './middleware/globalErrorHandler';
 import { notFound } from './middleware/notFound';
+import { authRoutes } from './module/auth/auth.routes';
 
 const app : Application = express();
 
@@ -22,6 +23,25 @@ app.get('/', (_req, res) => {
         message : 'Welcome to L2B7A4'
     })
 })
+
+
+
+app.use('/api/auth', authRoutes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.use(globalErrorHandler);
 app.use(notFound);
