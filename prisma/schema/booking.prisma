@@ -1,0 +1,22 @@
+model Booking {
+  id            String        @id @default(uuid())
+  customerId    String
+  technicianId  String
+  serviceId     String
+  scheduleDate  DateTime
+  timeSlot      String
+  status        BookingStatus @default(REQUESTED)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  customer   User    @relation("CustomerBookings", fields: [customerId], references: [id], onDelete: Cascade)
+  technician User    @relation("TechnicianBookings", fields: [technicianId], references: [id], onDelete: Cascade)
+  service    Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  payment Payment?
+  review  Review?
+
+  @@index([customerId])
+  @@index([technicianId])
+  @@index([serviceId])
+}

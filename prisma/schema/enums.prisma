@@ -9,3 +9,22 @@ enum ActiveStatus {
   ACTIVE
   BLOCKED
 }
+
+enum BookingStatus {
+  REQUESTED
+  ACCEPTED
+  DECLINED
+  PAID
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum PaymentProvider {
+  SSLCOMMERZ
+}

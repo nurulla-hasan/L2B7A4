@@ -1,0 +1,18 @@
+model Service {
+  id            String   @id @default(uuid())
+  name          String   @db.VarChar(255)
+  description   String   @db.Text
+  price         Decimal
+  categoryId    String
+  technicianId  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  technician User     @relation("TechnicianServices", fields: [technicianId], references: [id], onDelete: Cascade)
+
+  bookings Booking[]
+
+  @@index([categoryId])
+  @@index([technicianId])
+}
