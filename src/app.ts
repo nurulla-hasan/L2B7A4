@@ -8,6 +8,7 @@ import { notFound } from './middleware/notFound';
 import { authRoutes } from './module/auth/auth.routes';
 import { categoryRoutes } from './module/category/category.route';
 import { adminRoutes } from './module/admin/admin.route';
+import { serviceRoutes } from './module/service/service.route';
 
 const app : Application = express();
 
@@ -30,6 +31,8 @@ app.get('/', (_req, res) => {
 
 app.use('/api/auth', authRoutes)
 app.use("/api/categories", categoryRoutes);
+
+app.use("/api/services", serviceRoutes);
 
 
 // admin route
