@@ -4,7 +4,7 @@ model TechnicianProfile {
   skills       String   @db.Text
   experience   String   @db.Text
   pricing      Decimal
-  availability Json?
+  availability Json? @db.JsonB
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
