@@ -3,7 +3,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { authService } from "./auth.service";
 import httpStatus from "http-status";
 
-const loginUser = catchAsync(async (req, res, next) => {
+const loginUser = catchAsync(async (req, res) => {
   const result = await authService.loginUserIntoDB(req.body);
 
   res.cookie("refreshToken", result.refreshToken, {
@@ -22,7 +22,21 @@ const loginUser = catchAsync(async (req, res, next) => {
   });
 });
 
+const registerUser = catchAsync(async (req, res) => {
+  
+  const result = await authService.registerUserIntoDB(req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "User created successfully",
+    data: result,
+  });
+
+})
+
 
 export const authController = {
   loginUser,
+  registerUser
 };
