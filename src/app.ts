@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import { globalErrorHandler } from './middleware/globalErrorHandler';
 import { notFound } from './middleware/notFound';
 import { authRoutes } from './module/auth/auth.routes';
+import { categoryRoutes } from './module/category/category.route';
+import { adminRoutes } from './module/admin/admin.route';
 
 const app : Application = express();
 
@@ -27,12 +29,11 @@ app.get('/', (_req, res) => {
 
 
 app.use('/api/auth', authRoutes)
+app.use("/api/categories", categoryRoutes);
 
 
-
-
-
-
+// admin route
+app.use("/api/admin", adminRoutes);
 
 
 
