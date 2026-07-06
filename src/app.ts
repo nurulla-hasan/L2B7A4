@@ -44,7 +44,7 @@ app.use("/api/admin", adminRoutes);
 
 
 
-app.use(globalErrorHandler);
 app.use(notFound);
+app.use(globalErrorHandler);
 
 export default app
