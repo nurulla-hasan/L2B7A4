@@ -12,6 +12,12 @@ const loginUser = catchAsync(async (req, res) => {
     secure: true,
   });
 
+  res.cookie("accessToken", result.accessToken, {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -35,8 +41,19 @@ const registerUser = catchAsync(async (req, res) => {
 
 })
 
+const getMe = catchAsync(async (req, res) => {
+  const result = await authService.getMeFromDB(req.user.id);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User retrieved successfully",
+    data: result,
+  });
+});
+
 
 export const authController = {
   loginUser,
-  registerUser
+  registerUser,
+  getMe
 };
