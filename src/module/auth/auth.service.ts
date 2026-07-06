@@ -7,9 +7,13 @@ import config from "../../config";
 const loginUserIntoDB = async (payload: ILoginUser) => {
   const { email, password } = payload;
 
-  const user = await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUnique({
     where: { email },
   });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   if (user.activeStatus === "BLOCKED") {
     throw new Error("Your account has been blocked. Please contact support.");
@@ -44,6 +48,10 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
 
 const registerUserIntoDB = async (payload: IRegisterUser) => {
   const { name, email, password, role } = payload;
+
+  if (role !== "CUSTOMER" && role !== "TECHNICIAN") {
+    throw new Error("Role must be either CUSTOMER or TECHNICIAN");
+  }
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
