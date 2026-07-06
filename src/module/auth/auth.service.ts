@@ -3,6 +3,8 @@ import { prisma } from "../../lib/prisma";
 import { ILoginUser, IRegisterUser } from "./auth.interface";
 import { jwtUtils } from "../../utils/jwt";
 import config from "../../config";
+import AppError from "../../utils/AppError";
+import httpStatus from "http-status";
 
 const loginUserIntoDB = async (payload: ILoginUser) => {
   const { email, password } = payload;
@@ -12,17 +14,17 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
 
   if (user.activeStatus === "BLOCKED") {
-    throw new Error("Your account has been blocked. Please contact support.");
+    throw new AppError(httpStatus.FORBIDDEN, "Your account has been blocked. Please contact support.");
   }
 
   const isPasswordMatched = await bcrypt.compare(password, user.password);
 
   if (!isPasswordMatched) {
-    throw new Error("Password is incorrect");
+    throw new AppError(httpStatus.UNAUTHORIZED, "Password is incorrect");
   }
 
   const jwtPayload = {
@@ -50,7 +52,7 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
   const { name, email, password, role } = payload;
 
   if (role !== "CUSTOMER" && role !== "TECHNICIAN") {
-    throw new Error("Role must be either CUSTOMER or TECHNICIAN");
+    throw new AppError(httpStatus.BAD_REQUEST, "Role must be either CUSTOMER or TECHNICIAN");
   }
 
   const existingUser = await prisma.user.findUnique({
@@ -58,7 +60,7 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
   });
 
   if (existingUser) {
-    throw new Error("User already exists");
+    throw new AppError(httpStatus.CONFLICT, "User already exists");
   }
 
   const hashedPassword = await bcrypt.hash(
@@ -122,7 +124,7 @@ const getMeFromDB = async (userId: string) => {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
   return user;
 };

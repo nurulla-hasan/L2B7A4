@@ -1,5 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { ICreateService, IUpdateService } from "./service.interface";
+import AppError from "../../utils/AppError";
+import httpStatus from "http-status";
 
 const getAllServicesFromDB = async () => {
   const result = await prisma.service.findMany({
@@ -19,7 +21,7 @@ const getSingleServiceFromDB = async (id: string) => {
   });
 
   if (!result) {
-    throw new Error("Service not found!");
+    throw new AppError(httpStatus.NOT_FOUND, "Service not found!");
   }
 
   return result;
@@ -43,10 +45,10 @@ const updateServiceFromDB = async (
 ) => {
   const existingService = await prisma.service.findUnique({ where: { id } });
 
-  if (!existingService) throw new Error("Service not found!");
+  if (!existingService) throw new AppError(httpStatus.NOT_FOUND, "Service not found!");
 
   if (existingService.technicianId !== userId) {
-    throw new Error("You can only update your own services!");
+    throw new AppError(httpStatus.FORBIDDEN, "You can only update your own services!");
   }
 
   const result = await prisma.service.update({
@@ -62,10 +64,10 @@ const updateServiceFromDB = async (
 const deleteServiceFromDB = async (userId: string, id: string) => {
   const existingService = await prisma.service.findUnique({ where: { id } });
 
-  if (!existingService) throw new Error("Service not found!");
+  if (!existingService) throw new AppError(httpStatus.NOT_FOUND, "Service not found!");
 
   if (existingService.technicianId !== userId) {
-    throw new Error("You can only update your own services!");
+    throw new AppError(httpStatus.FORBIDDEN, "You can only delete your own services!");
   }
 
   const result = await prisma.service.delete({
