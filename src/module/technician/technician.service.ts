@@ -215,7 +215,9 @@ const updateBookingStatusFromDB = async (
     IN_PROGRESS: ["COMPLETED"],
   };
 
-  if (!validTransitions[booking.status].includes(status)) {
+  const allowedTransitions = validTransitions[booking.status];
+
+  if (!allowedTransitions || !allowedTransitions.includes(status)) {
     throw new Error("Invalid status transition!");
   }
 

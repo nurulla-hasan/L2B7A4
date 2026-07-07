@@ -8,5 +8,6 @@ const router = Router();
 router.post("/", auth(Role.CUSTOMER), bookingController.createBooking);
 router.get("/", auth(), bookingController.getMyBookings);
 router.get("/:id", auth(), bookingController.getSingleBooking);
+router.patch("/:id/cancel", auth(Role.CUSTOMER), bookingController.cancelBooking);
 
 export const bookingRoutes = router;

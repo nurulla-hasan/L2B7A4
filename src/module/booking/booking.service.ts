@@ -2,6 +2,7 @@ import { prisma } from "../../lib/prisma";
 import AppError from "../../utils/AppError";
 import { ICreateBooking } from "./booking.interface";
 import httpStatus from "http-status";
+import { BookingStatus } from "../../../generated/prisma/enums";
 
 const createBookingIntoDB = async (userId: string, data: ICreateBooking) => {
   const result = await prisma.booking.create({
@@ -111,8 +112,46 @@ const getSingleBookingFromDB = async (bookingId: string, userId: string) => {
   return result;
 };
 
+const cancelBookingFromDB = async (userId: string, bookingId: string) => {
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+  });
+
+  if (!booking) {
+    throw new AppError(httpStatus.NOT_FOUND, "Booking not found!");
+  }
+
+  if (booking.customerId !== userId) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You can only cancel your own bookings!",
+    );
+  }
+
+  const cancellableStatuses: BookingStatus[] = [
+    "REQUESTED",
+    "ACCEPTED",
+    "PAID",
+  ];
+
+  if (!cancellableStatuses.includes(booking.status)) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Booking cannot be cancelled at this stage!",
+    );
+  }
+
+  const result = await prisma.booking.update({
+    where: { id: bookingId },
+    data: { status: BookingStatus.DECLINED },
+  });
+
+  return result;
+};
+
 export const bookingService = {
   createBookingIntoDB,
   getMyBookingsFromDB,
   getSingleBookingFromDB,
+  cancelBookingFromDB,
 };
