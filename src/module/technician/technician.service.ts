@@ -137,7 +137,7 @@ const updateBookingStatusFromDB = async (
 
   const validTransitions: Record<string, string[]> = {
     REQUESTED: ["ACCEPTED", "DECLINED"],
-    ACCEPTED: ["IN_PROGRESS"],
+    PAID: ["IN_PROGRESS"],
     IN_PROGRESS: ["COMPLETED"],
   };
 

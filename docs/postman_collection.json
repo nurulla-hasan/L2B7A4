@@ -1,17 +1,10 @@
 {
   "info": {
-    "_postman_id": "a36bfb12-3f46-4898-9330-ade4c0c1b196",
+    "_postman_id": "f3fb43d4-a063-4677-aa66-d867a939a8c0",
     "name": "FixIt Now",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "44237160"
   },
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:5000",
-      "type": "string"
-    }
-  ],
   "item": [
     {
       "name": "Auth",
@@ -32,11 +25,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/auth/login",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "auth",
@@ -62,11 +53,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/auth/register",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "auth",
@@ -92,11 +81,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/auth/register",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "auth",
@@ -112,12 +99,10 @@
             "method": "GET",
             "header": [],
             "url": {
-"raw": "{{base_url}}/api/auth/register",
-              "protocol": "http",
+              "raw": "{{base_url}}/api/auth/me",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "auth",
@@ -139,11 +124,9 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/categories",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "categories"
@@ -164,11 +147,9 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/services",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "services"
@@ -183,16 +164,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/services/208dc751-39c0-4119-9e93-95ea539987b7",
-              "protocol": "http",
+              "raw": "{{base_url}}/api/services/50db7302-4cb0-4ad9-a0f2-656d3b9140f6",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "services",
-                "208dc751-39c0-4119-9e93-95ea539987b7"
+                "50db7302-4cb0-4ad9-a0f2-656d3b9140f6"
               ]
             }
           },
@@ -214,11 +193,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/services",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "services"
@@ -243,11 +220,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/services/b56e53d6-7428-42a9-b0d2-bd1bcef19212",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "services",
@@ -264,11 +239,9 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/services/rgegr",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "services",
@@ -295,11 +268,9 @@
             ],
             "url": {
               "raw": "{{base_url}}/api/admin/users",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "admin",
@@ -325,11 +296,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/admin/categories",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "admin",
@@ -351,11 +320,9 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/technicians",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "technicians"
@@ -370,16 +337,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/technicians/70c3e902-076b-4a4c-90ee-5a72bbbb5ceb",
-              "protocol": "http",
+              "raw": "{{base_url}}/api/technicians/325702d3-cb54-41a4-b6d9-bc056e3ea82a",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "technicians",
-                "70c3e902-076b-4a4c-90ee-5a72bbbb5ceb"
+                "325702d3-cb54-41a4-b6d9-bc056e3ea82a"
               ]
             }
           },
@@ -406,11 +371,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/technician/profile",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "technician",
@@ -436,11 +399,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/technician/availability",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "technician",
@@ -466,11 +427,9 @@
             },
             "url": {
               "raw": "{{base_url}}/api/technician/bookings/dsfgs",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "technician",
@@ -488,11 +447,9 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/technician/bookings",
-              "protocol": "http",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "technician",
@@ -503,6 +460,12 @@
           "response": []
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
     }
   ]
 }
