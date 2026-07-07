@@ -18,7 +18,7 @@ const managementRouter = Router();
 managementRouter.put("/profile", auth(Role.TECHNICIAN), technicianController.updateProfile);
 managementRouter.put("/availability", auth(Role.TECHNICIAN), technicianController.updateAvailability);
 managementRouter.get("/bookings", auth(Role.TECHNICIAN), technicianController.getMyBookings);
-managementRouter.patch("/bookings/:bookingId", auth(Role.TECHNICIAN), technicianController.updateBookingStatus);
+managementRouter.patch("/bookings/:id", auth(Role.TECHNICIAN), technicianController.updateBookingStatus);
 
 export const technicianPublicRoutes = publicRouter;
 export const technicianManagementRoutes = managementRouter;
