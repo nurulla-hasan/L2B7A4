@@ -9,6 +9,7 @@ import { authRoutes } from './module/auth/auth.routes';
 import { categoryRoutes } from './module/category/category.route';
 import { adminRoutes } from './module/admin/admin.route';
 import { serviceRoutes } from './module/service/service.route';
+import { technicianPublicRoutes, technicianManagementRoutes } from './module/technician/technician.route';
 
 const app : Application = express();
 
@@ -33,6 +34,8 @@ app.use('/api/auth', authRoutes)
 app.use("/api/categories", categoryRoutes);
 
 app.use("/api/services", serviceRoutes);
+app.use("/api/technicians", technicianPublicRoutes);
+app.use("/api/technician", technicianManagementRoutes);
 
 
 // admin route

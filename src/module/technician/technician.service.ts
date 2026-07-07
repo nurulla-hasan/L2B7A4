@@ -1,0 +1,167 @@
+import { BookingStatus, Role } from "../../../generated/prisma/enums";
+import { prisma } from "../../lib/prisma";
+import { IUpdateProfile, IUpdateAvailability } from "./technician.interface";
+
+const getAllTechniciansFromDB = async () => {
+  const result = await prisma.user.findMany({
+    where: {
+      role: Role.TECHNICIAN,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      activeStatus: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return result;
+};
+
+const getSingleTechnicianFromDB = async (id: string) => {
+  const result = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      activeStatus: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  if (!result) {
+    throw new Error("Technician not found!");
+  }
+
+  return result;
+};
+
+const updateProfileIntoDB = async (userId: string, data: IUpdateProfile) => {
+  const existing = await prisma.technicianProfile.findUnique({
+    where: { userId },
+  });
+
+  if (!existing) {
+    throw new Error(
+      "Technician profile not found! Please create a profile first.",
+    );
+  }
+
+  const result = await prisma.technicianProfile.update({
+    where: { userId },
+    data,
+  });
+
+  return result;
+};
+
+const updateAvailabilityIntoDB = async (
+  userId: string,
+  data: IUpdateAvailability,
+) => {
+  const existing = await prisma.technicianProfile.findUnique({
+    where: { userId },
+  });
+
+  if (!existing) {
+    throw new Error(
+      "Technician availability not found! Please create a profile first.",
+    );
+  }
+
+  const result = await prisma.technicianProfile.update({
+    where: { userId },
+    data: {
+      availability: data,
+    },
+  });
+
+  return result;
+};
+
+const getMyBookingsFromDB = async (userId: string) => {
+  const result = await prisma.booking.findMany({
+    where: {
+      technicianId: userId,
+    },
+    include: {
+      customer: {
+        select: { id: true, name: true, email: true },
+      },
+      service: {
+        select: { id: true, name: true, price: true },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return result.map((booking) => {
+    return {
+      id: booking.id,
+      serviceId: booking.serviceId,
+      serviceName: booking.service.name,
+      price: booking.service.price,
+      customerName: booking.customer.name,
+      customerEmail: booking.customer.email,
+      scheduleDate: booking.scheduleDate,
+      timeSlot: booking.timeSlot,
+      status: booking.status,
+    };
+  });
+};
+
+const updateBookingStatusFromDB = async (
+  userId: string,
+  bookingId: string,
+  status: string,
+) => {
+  const booking = await prisma.booking.findUnique({
+    where: {
+      id: bookingId,
+    },
+  });
+
+  if (!booking) {
+    throw new Error("Booking not found!");
+  }
+
+  if (booking.technicianId !== userId) {
+    throw new Error("You can only update your own bookings!");
+  }
+
+  const validTransitions: Record<string, string[]> = {
+    REQUESTED: ["ACCEPTED", "DECLINED"],
+    ACCEPTED: ["IN_PROGRESS"],
+    IN_PROGRESS: ["COMPLETED"],
+  };
+
+  if (!validTransitions[booking.status].includes(status)) {
+    throw new Error("Invalid status transition!");
+  }
+
+  const result = await prisma.booking.update({
+    where: {
+      id: bookingId,
+    },
+    data: {
+      status: status as BookingStatus,
+    },
+  });
+
+  return result;
+};
+
+export const technicianService = {
+  getAllTechniciansFromDB,
+  getSingleTechnicianFromDB,
+  updateProfileIntoDB,
+  updateAvailabilityIntoDB,
+  getMyBookingsFromDB,
+  updateBookingStatusFromDB,
+};

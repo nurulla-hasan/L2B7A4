@@ -5,6 +5,7 @@ import { jwtUtils } from "../../utils/jwt";
 import config from "../../config";
 import AppError from "../../utils/AppError";
 import httpStatus from "http-status";
+import { Role } from "../../../generated/prisma/enums";
 
 const loginUserIntoDB = async (payload: ILoginUser) => {
   const { email, password } = payload;
@@ -77,6 +78,17 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
     },
   });
 
+  if (role === Role.TECHNICIAN) {
+    await prisma.technicianProfile.create({
+      data: {
+        userId: user.id,
+        skills: "",
+        experience: "",
+        pricing: 0,
+      },
+    })    
+  }
+
   const jwtPayload = {
     id: user.id,
     name: user.name,
@@ -120,6 +132,15 @@ const getMeFromDB = async (userId: string) => {
       activeStatus: true,
       createdAt: true,
       updatedAt: true,
+      technicianProfile: {
+        select: {
+          id: true,
+          skills: true,
+          experience: true,
+          pricing: true,
+          availability: true,
+        },
+      },
     },
   });
 
