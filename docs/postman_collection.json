@@ -21,7 +21,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "// {\n//   \"email\": \"admin@gmail.com\",\n//   \"password\": \"password123\"\n// }\n\n// {\n//   \"email\": \"technician10@gmail.com\",\n//   \"password\": \"password123\"\n// }\n\n{\n  \"email\": \"customer2@gmail.com\",\n  \"password\": \"password123\"\n}\n"
+              "raw": "// {\n//   \"email\": \"admin@gmail.com\",\n//   \"password\": \"111111\"\n// }\n\n{\n  \"email\": \"golap@technician.com\",\n  \"password\": \"111111\"\n}\n\n// {\n//   \"email\": \"golap@customer.com\",\n//   \"password\": \"111111\"\n// }\n"
             },
             "url": {
               "raw": "{{base_url}}/api/auth/login",
@@ -153,6 +153,26 @@
               "path": [
                 "api",
                 "services"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "Painting",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "dhaka",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "rating",
+                  "value": "0",
+                  "type": "text",
+                  "disabled": true
+                }
               ]
             }
           },
@@ -184,7 +204,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Deep Home Cleaning\",\r\n  \"description\": \"Full home deep cleaning service including kitchen, bathroom, and windows\",\r\n  \"price\": 3000,\r\n  \"categoryId\": \"e5dc4e73-7c87-4b36-8e67-e4e1dbdc37d2\"\r\n}",
+              "raw": "{\r\n  \"name\": \"Fan Installation & Repair\",\r\n  \"description\": \"Professional ceiling fan installation, repair, and replacement services for homes and offices.\",\r\n  \"price\": 800,\r\n  \"location\": \"Dhaka\",\r\n  \"categoryId\": \"afa42997-e4f6-4c9b-8a0c-756b4439b72b\"\r\n}\r\n\r\n// {\r\n//   \"name\": \"Pipe Leak Repair\",\r\n//   \"description\": \"Expert pipe leak detection and repair service. Fast response and guaranteed workmanship.\",\r\n//   \"price\": 600,\r\n//   \"location\": \"Chattagram\",\r\n//   \"categoryId\": \"470b2c77-75da-4d5a-bcc6-964690c7fe32\"\r\n// }\r\n\r\n// {\r\n//   \"name\": \"Deep Home Cleaning\",\r\n//   \"description\": \"Complete deep cleaning service including kitchen, bathroom, bedrooms, and living areas.\",\r\n//   \"price\": 1500,\r\n//   \"location\": \"Rajshahi\",\r\n//   \"categoryId\": \"0f8ce45d-d29b-4382-8c35-e55a4c0daae0\"\r\n// }\r\n\r\n// {\r\n//   \"name\": \"Custom Furniture Making\",\r\n//   \"description\": \"Custom-designed wooden furniture including cabinets, shelves, tables, and wardrobes.\",\r\n//   \"price\": 3000,\r\n//   \"location\": \"Dinajpur\",\r\n//   \"categoryId\": \"56007705-f27a-4ecb-b890-bb941302cf0d\"\r\n// }\r\n\r\n// {\r\n//   \"name\": \"Interior Wall Painting\",\r\n//   \"description\": \"Full interior wall painting service with premium quality paints and smooth finish.\",\r\n//   \"price\": 5000,\r\n//   \"location\": \"Rangpur\",\r\n//   \"categoryId\": \"63fa4b50-33f0-47a0-9789-6f3a279c4c4d\"\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -360,6 +380,13 @@
               "path": [
                 "api",
                 "technicians"
+              ],
+              "query": [
+                {
+                  "key": "searchTerm",
+                  "value": "Golap",
+                  "disabled": true
+                }
               ]
             }
           },
@@ -396,7 +423,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"skills\": \"Plumbing, Pipe Repair, Water Heater Installation\",\r\n  \"experience\": \"5 years of experience in residential and commercial plumbing\",\r\n  \"pricing\": 50\r\n}",
+              "raw": "{\r\n  \"skills\": \"Plumbing, Pipe Repair, Water Heater Installation\",\r\n  \"experience\": \"5 years of experience in residential and commercial plumbing\",\r\n  \"pricing\": 60\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -557,6 +584,26 @@
               "path": [
                 "api",
                 "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/bookings/155ea0c4-7653-4dca-be2a-9e5eb94d3c48/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "155ea0c4-7653-4dca-be2a-9e5eb94d3c48",
+                "cancel"
               ]
             }
           },
