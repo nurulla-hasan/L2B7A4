@@ -4,7 +4,9 @@ import { technicianService } from "./technician.service";
 import httpStatus from "http-status";
 
 const getAllTechnicians = catchAsync(async (req, res) => {
-  const result = await technicianService.getAllTechniciansFromDB();
+  const result = await technicianService.getAllTechniciansFromDB(
+    req.query as Record<string, unknown>,
+  );
 
   sendResponse(res, {
     success: true,

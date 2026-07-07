@@ -6,7 +6,7 @@ type TErrorResponse = {
   success: boolean;
   statusCode: number;
   message: string;
-  errorSources?: { path: string | number; message: string }[];
+  errorDetails?: { path: string | number; message: string }[];
   stack?: string;
 };
 
@@ -52,7 +52,7 @@ export const globalErrorHandler = (
 
   if (config.node_env === "development") {
     errorResponse.stack = err.stack;
-    errorResponse.errorSources = err.meta
+    errorResponse.errorDetails = err.meta
       ? [{ path: "database", message: JSON.stringify(err.meta) }]
       : undefined;
   }

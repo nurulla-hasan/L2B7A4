@@ -4,7 +4,9 @@ import { serviceServices } from "./service.service";
 import httpStatus from "http-status";
 
 const getAllService = catchAsync(async (req, res) => {
-  const result = await serviceServices.getAllServicesFromDB();
+  const result = await serviceServices.getAllServicesFromDB(
+    req.query as Record<string, unknown>,
+  );
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

@@ -3,6 +3,7 @@ model Service {
   name          String   @db.VarChar(255)
   description   String   @db.Text
   price         Decimal
+  location      String   @db.VarChar(255) 
   categoryId    String
   technicianId  String
   createdAt     DateTime @default(now())

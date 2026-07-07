@@ -1,3 +1,5 @@
+import { UserWhereInput } from "../../../generated/prisma/models";
+
 export interface IUpdateProfile {
   skills?: string;
   experience?: string;
@@ -5,3 +7,8 @@ export interface IUpdateProfile {
 }
 
 export type IUpdateAvailability = Record<string, string[]>;
+
+
+export interface ItechnicianQuery extends UserWhereInput {
+    searchTerm?: string
+} 

@@ -1,11 +1,47 @@
 import { BookingStatus, Role } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
-import { IUpdateProfile, IUpdateAvailability } from "./technician.interface";
+import AppError from "../../utils/AppError";
+import httpStatus from "http-status";
+import {
+  IUpdateProfile,
+  IUpdateAvailability,
+  ItechnicianQuery,
+} from "./technician.interface";
+import { Prisma } from "../../../generated/prisma/client";
 
-const getAllTechniciansFromDB = async () => {
+const getAllTechniciansFromDB = async (query: ItechnicianQuery) => {
+  const { searchTerm } = query;
+
+  const andConditions: Prisma.UserWhereInput[] = [];
+
+  andConditions.push({
+    role: Role.TECHNICIAN,
+  });
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: [
+        {
+          name: {
+            contains: searchTerm as string,
+            mode: "insensitive",
+          },
+        },
+        {
+          technicianProfile: {
+            skills: {
+              contains: searchTerm as string,
+              mode: "insensitive",
+            },
+          },
+        },
+      ],
+    });
+  }
+
   const result = await prisma.user.findMany({
     where: {
-      role: Role.TECHNICIAN,
+      AND: andConditions,
     },
     select: {
       id: true,
@@ -15,6 +51,15 @@ const getAllTechniciansFromDB = async () => {
       activeStatus: true,
       createdAt: true,
       updatedAt: true,
+      technicianProfile: {
+        select: {
+          id: true,
+          skills: true,
+          experience: true,
+          pricing: true,
+          availability: true,
+        },
+      },
     },
   });
 
@@ -32,14 +77,43 @@ const getSingleTechnicianFromDB = async (id: string) => {
       activeStatus: true,
       createdAt: true,
       updatedAt: true,
+      technicianProfile: {
+        select: {
+          id: true,
+          skills: true,
+          experience: true,
+          pricing: true,
+          availability: true,
+        },
+      },
     },
   });
 
   if (!result) {
-    throw new Error("Technician not found!");
+    throw new AppError(httpStatus.NOT_FOUND, "Technician not found!");
   }
 
-  return result;
+  const reviews = await prisma.review.findMany({
+    where: {
+      booking: {
+        technicianId: id,
+      },
+    },
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return {
+    ...result,
+    reviews,
+  };
 };
 
 const updateProfileIntoDB = async (userId: string, data: IUpdateProfile) => {
