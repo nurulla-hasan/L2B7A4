@@ -5,6 +5,19 @@ import httpStatus from "http-status";
 
 const getAllServicesFromDB = async () => {
   const result = await prisma.service.findMany({
+    include: {
+      technician: {
+        select: {
+          id: true,
+          name: true,
+          technicianProfile: {
+            select: {
+              availability: true,
+            },
+          },
+        },
+      },
+    },
     orderBy: {
       name: "desc",
     },
@@ -17,6 +30,19 @@ const getSingleServiceFromDB = async (id: string) => {
   const result = await prisma.service.findUnique({
     where: {
       id,
+    },
+    include: {
+      technician: {
+        select: {
+          id: true,
+          name: true,
+          technicianProfile: {
+            select: {
+              availability: true,
+            },
+          },
+        },
+      },
     },
   });
 

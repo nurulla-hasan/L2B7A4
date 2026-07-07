@@ -2,6 +2,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { paymentService } from "./payment.service";
 import httpStatus from "http-status";
+import config from "../../config";
 
 const createPayment = catchAsync(async (req, res) => {
   const result = await paymentService.createPaymentIntoDB(
@@ -17,18 +18,43 @@ const createPayment = catchAsync(async (req, res) => {
   });
 });
 
-const confirmPayment = catchAsync(async (req, res) => {
-  const result = await paymentService.confirmPaymentIntoDB(
-    req.user?.id as string,
-    req.body,
-  );
+const paymentSuccess = catchAsync(async (req, res) => {
+  const { tranId } = req.query;
 
-  sendResponse(res, {
-    success: true,
-    statusCode: httpStatus.OK,
-    message: "Payment confirmed successfully",
-    data: result,
-  });
+  if (!tranId) {
+    res.redirect(`${config.app_url}/payment/failed`);
+    return;
+  }
+
+  await paymentService.paymentSuccessIntoDB(tranId as string);
+
+  // Redirect to frontend success page
+  res.redirect(`${config.app_url}/payment/success`);
+});
+
+const paymentFail = catchAsync(async (req, res) => {
+  const { tranId } = req.query;
+
+  if (tranId) {
+    await paymentService.paymentFailIntoDB(tranId as string);
+  }
+
+  res.redirect(`${config.app_url}/payment/failed`);
+});
+
+const paymentCancel = catchAsync(async (req, res) => {
+  const { tranId } = req.query;
+
+  if (tranId) {
+    await paymentService.paymentFailIntoDB(tranId as string);
+  }
+
+  res.redirect(`${config.app_url}/payment/cancelled`);
+});
+
+const paymentIpn = catchAsync(async (req, res) => {
+  await paymentService.paymentIpnIntoDB(req.body);
+  res.status(httpStatus.OK).json({ message: "IPN received" });
 });
 
 const getMyPayments = catchAsync(async (req, res) => {
@@ -60,7 +86,10 @@ const getSinglePayment = catchAsync(async (req, res) => {
 
 export const paymentController = {
   createPayment,
-  confirmPayment,
+  paymentSuccess,
+  paymentFail,
+  paymentCancel,
+  paymentIpn,
   getMyPayments,
   getSinglePayment,
 };
