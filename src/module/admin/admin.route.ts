@@ -2,12 +2,15 @@ import { Router } from "express";
 import { categoryController } from "../category/category.controller";
 import { Role } from "../../../generated/prisma/enums";
 import { auth } from "../../middleware/auth";
+import { validate } from "../../middleware/validate";
+import { adminValidation } from "../../validation/admin.schema";
+import { categoryValidation } from "../../validation/category.schema";
 import { adminController } from "./admin.controller";
 
 const router = Router();
 
 router.get("/users", auth(Role.ADMIN), adminController.getAllUsers);
-router.patch("/users/:id", auth(Role.ADMIN), adminController.updateUserStatus);
+router.patch("/users/:id", auth(Role.ADMIN), validate(adminValidation.updateUserStatusSchema), adminController.updateUserStatus);
 router.get("/bookings", auth(Role.ADMIN), adminController.getAllBookings);
 
 router.get(
@@ -15,6 +18,6 @@ router.get(
   auth(Role.ADMIN),
   categoryController.getAllCategories,
 );
-router.post("/categories", auth(Role.ADMIN), categoryController.createCategory);
+router.post("/categories", auth(Role.ADMIN), validate(categoryValidation.createCategorySchema), categoryController.createCategory);
 
 export const adminRoutes = router;

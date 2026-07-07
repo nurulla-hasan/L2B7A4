@@ -1,5 +1,7 @@
 import { ActiveStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+import AppError from "../../utils/AppError";
+import httpStatus from "http-status";
 
 const getAllUsersFromDB = async () => {
   const result = await prisma.user.findMany({
@@ -24,12 +26,12 @@ const updateUserStatusIntoDB = async (
   activeStatus: ActiveStatus,
 ) => {
   if (!Object.values(ActiveStatus).includes(activeStatus)) {
-    throw new Error("Invalid status! Use ACTIVE or BLOCKED");
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid status! Use ACTIVE or BLOCKED");
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
-    throw new Error("User not found!");
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
   }
 
   const result = await prisma.user.update({

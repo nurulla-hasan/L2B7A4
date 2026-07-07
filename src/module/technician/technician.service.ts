@@ -122,7 +122,8 @@ const updateProfileIntoDB = async (userId: string, data: IUpdateProfile) => {
   });
 
   if (!existing) {
-    throw new Error(
+    throw new AppError(
+      httpStatus.NOT_FOUND,
       "Technician profile not found! Please create a profile first.",
     );
   }
@@ -144,7 +145,8 @@ const updateAvailabilityIntoDB = async (
   });
 
   if (!existing) {
-    throw new Error(
+    throw new AppError(
+      httpStatus.NOT_FOUND,
       "Technician availability not found! Please create a profile first.",
     );
   }
@@ -202,11 +204,11 @@ const updateBookingStatusFromDB = async (
   });
 
   if (!booking) {
-    throw new Error("Booking not found!");
+    throw new AppError(httpStatus.NOT_FOUND, "Booking not found!");
   }
 
   if (booking.technicianId !== userId) {
-    throw new Error("You can only update your own bookings!");
+    throw new AppError(httpStatus.FORBIDDEN, "You can only update your own bookings!");
   }
 
   const validTransitions: Record<string, string[]> = {
@@ -218,7 +220,7 @@ const updateBookingStatusFromDB = async (
   const allowedTransitions = validTransitions[booking.status];
 
   if (!allowedTransitions || !allowedTransitions.includes(status)) {
-    throw new Error("Invalid status transition!");
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid status transition!");
   }
 
   const result = await prisma.booking.update({
