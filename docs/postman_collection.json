@@ -5,6 +5,13 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "44237160"
   },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ],
   "item": [
     {
       "name": "Auth",
@@ -21,10 +28,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"golap@customer.com\",\n  \"password\": \"111111\"\n}"
+              "raw": "// {\n//   \"email\": \"admin@gmail.com\",\n//   \"password\": \"password123\"\n// }\n\n{\n  \"email\": \"technician1@gmail.com\",\n  \"password\": \"password123\"\n}\n\n// {\n//   \"email\": \"customer1@gmail.com.com\",\n//   \"password\": \"password123\"\n// }\n"
             },
             "url": {
-              "raw": "http://localhost:5000/api/auth/login",
+              "raw": "{{base_url}}/api/auth/login",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -54,7 +61,7 @@
               "raw": "{\n  \"name\": \"Golap Technician\",\n  \"email\": \"golap@technician.com\",\n  \"password\": \"111111\",\n  \"role\": \"TECHNICIAN\"\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/auth/register",
+              "raw": "{{base_url}}/api/auth/register",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -84,7 +91,7 @@
               "raw": "{\n  \"name\": \"Golap Customer\",\n  \"email\": \"golap@customer.com\",\n  \"password\": \"111111\",\n  \"role\": \"CUSTOMER\"\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/auth/register",
+              "raw": "{{base_url}}/api/auth/register",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -94,6 +101,402 @@
                 "api",
                 "auth",
                 "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+"raw": "{{base_url}}/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Get All Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Service",
+      "item": [
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/services",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "services"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Service",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/services/208dc751-39c0-4119-9e93-95ea539987b7",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "services",
+                "208dc751-39c0-4119-9e93-95ea539987b7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Service",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Deep Home Cleaning\",\r\n  \"description\": \"Full home deep cleaning service including kitchen, bathroom, and windows\",\r\n  \"price\": 3000,\r\n  \"categoryId\": \"e5dc4e73-7c87-4b36-8e67-e4e1dbdc37d2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/services",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "services"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Deep Home Cleaning Updated\",\r\n  \"description\": \"Full home deep cleaning service including kitchen, bathroom, and windows\",\r\n  \"price\": 3000,\r\n  \"categoryId\": \"e5dc4e73-7c87-4b36-8e67-e4e1dbdc37d2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/services/b56e53d6-7428-42a9-b0d2-bd1bcef19212",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "services",
+                "b56e53d6-7428-42a9-b0d2-bd1bcef19212"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/services/rgegr",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "services",
+                "rgegr"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Users (ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"AC Service\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "admin",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Technicians",
+      "item": [
+        {
+          "name": "Get All Technicians",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/technicians",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technicians"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Technician",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/technicians/70c3e902-076b-4a4c-90ee-5a72bbbb5ceb",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technicians",
+                "70c3e902-076b-4a4c-90ee-5a72bbbb5ceb"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Technician Management",
+      "item": [
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"skills\": \"Plumbing, Pipe Repair, Water Heater Installation\",\r\n  \"experience\": \"5 years of experience in residential and commercial plumbing\",\r\n  \"pricing\": 50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/technician/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Availability",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"monday\": [\"09:00-12:00\", \"14:00-17:00\"],\r\n  \"tuesday\": [\"10:00-16:00\"],\r\n  \"wednesday\": [\"09:00-18:00\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/technician/availability",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "availability"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Booking Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"ACCEPTED\"  // \"ACCEPTED\", \"DECLINED\", IN_PROGRESS, COMPLETED\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/technician/bookings/dsfgs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "bookings",
+                "dsfgs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/technician/bookings",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "bookings"
               ]
             }
           },

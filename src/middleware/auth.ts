@@ -5,7 +5,7 @@ import { jwtUtils } from "../utils/jwt";
 import config from "../config";
 import { prisma } from "../lib/prisma";
 import AppError from "../utils/AppError";
-import { Role } from "../../generated/prisma/client";
+import { Role } from "../../generated/prisma/enums";
 
 export const auth = (...requiredRoles: Role[]) => {
   return catchAsync(async (req: Request, _res: Response, next: NextFunction) => {
