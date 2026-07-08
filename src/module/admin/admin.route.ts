@@ -19,5 +19,7 @@ router.get(
   categoryController.getAllCategories,
 );
 router.post("/categories", auth(Role.ADMIN), validate(categoryValidation.createCategorySchema), categoryController.createCategory);
+router.patch("/categories/:id", auth(Role.ADMIN), validate(categoryValidation.updateCategorySchema), categoryController.updateCategory);
+router.delete("/categories/:id", auth(Role.ADMIN), categoryController.deleteCategory);
 
 export const adminRoutes = router;

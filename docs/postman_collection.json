@@ -172,6 +172,18 @@
                   "value": "0",
                   "type": "text",
                   "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": "500",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "3000",
+                  "type": "text",
+                  "disabled": true
                 }
               ]
             }
@@ -363,6 +375,67 @@
           "response": []
         },
         {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"AC & Refrigeration\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/categories/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "CATEGORY_ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/categories/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "CATEGORY_ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get All Bookings (Admin)",
           "request": {
             "method": "GET",
@@ -432,7 +505,27 @@
               "query": [
                 {
                   "key": "searchTerm",
-                  "value": "Golap",
+                  "value": "plumbing",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "Dhaka",
+                  "disabled": true
+                },
+                {
+                  "key": "rating",
+                  "value": "4",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": "500",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "3000",
                   "disabled": true
                 }
               ]

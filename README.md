@@ -60,7 +60,7 @@ L2B7A4/
 
 ## � API Documentation
 
-Complete API documentation with all **33+ endpoints** (Auth, Categories, Services, Technicians, Bookings, Payments, Reviews, Admin) is available as a **Postman Collection**:
+Complete API documentation with all **35+ endpoints** (Auth, Categories, Services, Technicians, Bookings, Payments, Reviews, Admin) is available as a **Postman Collection**:
 
 📁 **`docs/postman_collection.json`** — Import into Postman to explore and test all endpoints.
 
@@ -74,7 +74,7 @@ Complete API documentation with all **33+ endpoints** (Auth, Categories, Service
 | **Bookings** | Create, track, and cancel bookings |
 | **Payments** | SSLCommerz integration — amount is server-calculated from service price (not client-input); payment confirmation handled via success callback + IPN (no separate `/api/payments/confirm` endpoint) |
 | **Reviews** | Rate and review completed services |
-| **Admin** | User management, platform oversight |
+| **Admin** | User management, category management (CRUD), booking oversight |
 
 ---
 
