@@ -2,14 +2,105 @@ import { prisma } from "../../lib/prisma";
 import AppError from "../../utils/AppError";
 import { ICreateBooking } from "./booking.interface";
 import httpStatus from "http-status";
-import { BookingStatus } from "../../../generated/prisma/enums";
+import { BookingStatus, Role } from "../../../generated/prisma/enums";
 
 const createBookingIntoDB = async (userId: string, data: ICreateBooking) => {
+
+  const technician = await prisma.user.findUnique({
+    where: { id: data.technicianId },
+    include: {
+      technicianProfile: {
+        select: { availability: true },
+      },
+    },
+  });
+
+  if (!technician) {
+    throw new AppError(httpStatus.NOT_FOUND, "Technician not found!");
+  }
+
+  if (technician.role !== Role.TECHNICIAN) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Selected user is not a technician!",
+    );
+  }
+
+  if (data.technicianId === userId) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You cannot book your own service!",
+    );
+  }
+
+  const service = await prisma.service.findUnique({
+    where: { id: data.serviceId },
+  });
+
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, "Service not found!");
+  }
+
+  if (service.technicianId !== data.technicianId) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "This service does not belong to the selected technician!",
+    );
+  }
+
+  const bookingDate = new Date(data.scheduleDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (bookingDate <= today) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Schedule date must be a future date!",
+    );
+  }
+
+  const availability = technician.technicianProfile
+    ?.availability as Record<string, string[]> | null;
+
+  if (availability && Object.keys(availability).length > 0) {
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const dayOfWeek = dayNames[bookingDate.getDay()];
+    const availableSlots = availability[dayOfWeek];
+
+    if (!availableSlots || availableSlots.length === 0) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        `Technician is not available on ${dayOfWeek}!`,
+      );
+    }
+
+    const isSlotAvailable = availableSlots.some((slot) => {
+      const [slotStart, slotEnd] = slot.split("-");
+      const [reqStart, reqEnd] = data.timeSlot.split("-");
+      return reqStart >= slotStart && reqEnd <= slotEnd;
+    });
+
+    if (!isSlotAvailable) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        `Selected time slot ${data.timeSlot} is not within available slots on ${dayOfWeek}!`,
+      );
+    }
+  }
+
   const result = await prisma.booking.create({
     data: {
       technicianId: data.technicianId,
       serviceId: data.serviceId,
-      scheduleDate: new Date(data.scheduleDate),
+      scheduleDate: bookingDate,
       timeSlot: data.timeSlot,
       customerId: userId,
     },
