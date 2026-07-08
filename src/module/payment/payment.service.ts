@@ -21,6 +21,11 @@ const createPaymentIntoDB = async (userId: string, data: ICreatePayment) => {
           email: true,
         },
       },
+      service: {
+        select: {
+          price: true,
+        },
+      },
     },
   });
 
@@ -34,6 +39,9 @@ const createPaymentIntoDB = async (userId: string, data: ICreatePayment) => {
   if (booking.customerId !== userId) {
     throw new AppError(httpStatus.BAD_REQUEST, "This is not your booking!");
   }
+
+  // Amount is derived from the service price, NOT from client input (security)
+  const amount = Number(booking.service.price);
 
   const existingPayment = await prisma.payment.findUnique({
     where: {
@@ -55,7 +63,7 @@ const createPaymentIntoDB = async (userId: string, data: ICreatePayment) => {
     await tx.payment.create({
       data: {
         bookingId: data.bookingId,
-        amount: data.amount,
+        amount: amount,
         method: "ONLINE",
         provider: PaymentProvider.SSLCOMMERZ,
         transactionId: tranId,
@@ -70,7 +78,7 @@ const createPaymentIntoDB = async (userId: string, data: ICreatePayment) => {
     );
 
     const sslData = {
-      total_amount: Number(data.amount),
+      total_amount: Number(amount),
       currency: "BDT",
       tran_id: tranId,
       success_url: `${config.api_url}/api/payments/success?tranId=${tranId}`,
@@ -109,7 +117,7 @@ const createPaymentIntoDB = async (userId: string, data: ICreatePayment) => {
 
     return {
       transactionId: tranId,
-      amount: data.amount,
+      amount: amount,
       paymentUrl: apiResponse.GatewayPageURL,
     };
   });
@@ -117,7 +125,7 @@ const createPaymentIntoDB = async (userId: string, data: ICreatePayment) => {
   return result;
 };
 
-const paymentSuccessIntoDB = async (tranId: string) => {
+const paymentSuccessIntoDB = async (tranId: string, valId?: string) => {
   const payment = await prisma.payment.findFirst({
     where: { transactionId: tranId },
   });
@@ -127,6 +135,39 @@ const paymentSuccessIntoDB = async (tranId: string) => {
   }
   if (payment.status === PaymentStatus.COMPLETED) {
     return { message: "Payment already completed" };
+  }
+
+  // Validate with SSLCommerz API using val_id if provided
+  if (valId) {
+    const validationUrl = `${config.ssl_base_url}/validator/api/validationserverAPI.php?val_id=${valId}&store_id=${config.ssl_store_id}&store_passwd=${config.ssl_store_pass}&format=json`;
+
+    try {
+      const validationResponse = await fetch(validationUrl);
+      const validationData = await validationResponse.json() as any;
+
+      const isValid =
+        validationData.status === "VALID" ||
+        validationData.status === "VALIDATED";
+
+      if (!isValid) {
+        // Mark as failed if SSLCommerz rejects the transaction
+        await prisma.payment.update({
+          where: { id: payment.id },
+          data: { status: PaymentStatus.FAILED },
+        });
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Payment validation failed with SSLCommerz",
+        );
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      console.error("[SSLCommerz] Validation error in success callback:", error);
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        "Failed to validate payment with SSLCommerz",
+      );
+    }
   }
 
   const result = await prisma.$transaction(async (tx) => {

@@ -1,6 +1,5 @@
 export interface ICreatePayment {
   bookingId: string;
-  amount: number;
 }
 
 export interface IConfirmPayment {

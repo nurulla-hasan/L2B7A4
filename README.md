@@ -72,7 +72,7 @@ Complete API documentation with all **33+ endpoints** (Auth, Categories, Service
 | **Categories & Services** | Browse and manage service categories |
 | **Technicians** | Profiles, availability, booking management |
 | **Bookings** | Create, track, and cancel bookings |
-| **Payments** | SSLCommerz integration (create, callback, IPN) |
+| **Payments** | SSLCommerz integration — amount is server-calculated from service price (not client-input); payment confirmation handled via success callback + IPN (no separate `/api/payments/confirm` endpoint) |
 | **Reviews** | Rate and review completed services |
 | **Admin** | User management, platform oversight |
 
