@@ -948,7 +948,7 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:5000"
+      "value": "https://l2-b7-a4.vercel.app"
     }
   ]
 }

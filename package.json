@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "prisma generate && tsc",
+    "dev": "tsx watch ./src/server.ts",
+    "build": "prisma generate && tsup",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "seed": "tsx prisma/seed.ts",
@@ -28,6 +28,7 @@
     "@types/node": "^26.1.0",
     "@types/pg": "^8.20.0",
     "prisma": "^7.8.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3"
   },
