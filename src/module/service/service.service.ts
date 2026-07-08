@@ -5,7 +5,7 @@ import httpStatus from "http-status";
 import { Prisma } from "../../../generated/prisma/client";
 
 const getAllServicesFromDB = async (query : IServiceQuery) => {
-  const { searchTerm, type, location, rating } = query;
+  const { searchTerm, type, location, rating, minPrice, maxPrice } = query;
 
   const andConditions: Prisma.ServiceWhereInput[] = [];
 
@@ -60,6 +60,13 @@ const getAllServicesFromDB = async (query : IServiceQuery) => {
         },
       },
     });
+  }
+
+  if (minPrice || maxPrice) {
+    const priceFilter: Prisma.DecimalFilter = {};
+    if (minPrice) priceFilter.gte = parseFloat(minPrice as string);
+    if (maxPrice) priceFilter.lte = parseFloat(maxPrice as string);
+    andConditions.push({ price: priceFilter });
   }
   
 

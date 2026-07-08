@@ -11,4 +11,8 @@ export type IUpdateAvailability = Record<string, string[]>;
 
 export interface ItechnicianQuery extends UserWhereInput {
     searchTerm?: string
+    location?: string
+    rating?: string
+    minPrice?: string
+    maxPrice?: string
 } 

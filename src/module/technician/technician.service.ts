@@ -10,7 +10,7 @@ import {
 import { Prisma } from "../../../generated/prisma/client";
 
 const getAllTechniciansFromDB = async (query: ItechnicianQuery) => {
-  const { searchTerm } = query;
+  const { searchTerm, location, rating, minPrice, maxPrice } = query;
 
   const andConditions: Prisma.UserWhereInput[] = [];
 
@@ -37,6 +37,60 @@ const getAllTechniciansFromDB = async (query: ItechnicianQuery) => {
         },
       ],
     });
+  }
+
+  if (location) {
+    andConditions.push({
+      services: {
+        some: {
+          location: {
+            contains: location as string,
+            mode: "insensitive",
+          },
+        },
+      },
+    });
+  }
+
+  if (minPrice || maxPrice) {
+    const priceFilter: Prisma.DecimalFilter = {};
+    if (minPrice) priceFilter.gte = parseFloat(minPrice as string);
+    if (maxPrice) priceFilter.lte = parseFloat(maxPrice as string);
+    andConditions.push({
+      technicianProfile: {
+        pricing: priceFilter,
+      },
+    });
+  }
+
+  if (rating) {
+    const allTechs = await prisma.user.findMany({
+      where: { role: Role.TECHNICIAN },
+      select: {
+        id: true,
+        technicianBookings: {
+          select: {
+            review: {
+              select: { rating: true },
+            },
+          },
+        },
+      },
+    });
+
+    const minRating = parseInt(rating as string);
+    const qualifiedIds = allTechs
+      .filter((tech) => {
+        const ratings = tech.technicianBookings
+          .filter((b) => b.review !== null)
+          .map((b) => b.review!.rating);
+        if (ratings.length === 0) return false;
+        const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+        return avg >= minRating;
+      })
+      .map((tech) => tech.id);
+
+    andConditions.push({ id: { in: qualifiedIds } });
   }
 
   const result = await prisma.user.findMany({

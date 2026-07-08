@@ -27,6 +27,8 @@ export interface IServiceQuery extends ServiceWhereInput {
     type?: string
     location?: string
     rating?: string
+    minPrice?: string
+    maxPrice?: string
     page?: string
     limit?: string
 } 
