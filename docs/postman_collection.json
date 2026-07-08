@@ -21,7 +21,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "// {\n//   \"email\": \"admin@gmail.com\",\n//   \"password\": \"111111\"\n// }\n\n{\n  \"email\": \"golap@technician.com\",\n  \"password\": \"111111\"\n}\n\n// {\n//   \"email\": \"golap@customer.com\",\n//   \"password\": \"111111\"\n// }\n"
+              "raw": "{\n  \"email\": \"golap@technician.com\",\n  \"password\": \"111111\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/auth/login",
@@ -204,7 +204,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Fan Installation & Repair\",\r\n  \"description\": \"Professional ceiling fan installation, repair, and replacement services for homes and offices.\",\r\n  \"price\": 800,\r\n  \"location\": \"Dhaka\",\r\n  \"categoryId\": \"afa42997-e4f6-4c9b-8a0c-756b4439b72b\"\r\n}\r\n\r\n// {\r\n//   \"name\": \"Pipe Leak Repair\",\r\n//   \"description\": \"Expert pipe leak detection and repair service. Fast response and guaranteed workmanship.\",\r\n//   \"price\": 600,\r\n//   \"location\": \"Chattagram\",\r\n//   \"categoryId\": \"470b2c77-75da-4d5a-bcc6-964690c7fe32\"\r\n// }\r\n\r\n// {\r\n//   \"name\": \"Deep Home Cleaning\",\r\n//   \"description\": \"Complete deep cleaning service including kitchen, bathroom, bedrooms, and living areas.\",\r\n//   \"price\": 1500,\r\n//   \"location\": \"Rajshahi\",\r\n//   \"categoryId\": \"0f8ce45d-d29b-4382-8c35-e55a4c0daae0\"\r\n// }\r\n\r\n// {\r\n//   \"name\": \"Custom Furniture Making\",\r\n//   \"description\": \"Custom-designed wooden furniture including cabinets, shelves, tables, and wardrobes.\",\r\n//   \"price\": 3000,\r\n//   \"location\": \"Dinajpur\",\r\n//   \"categoryId\": \"56007705-f27a-4ecb-b890-bb941302cf0d\"\r\n// }\r\n\r\n// {\r\n//   \"name\": \"Interior Wall Painting\",\r\n//   \"description\": \"Full interior wall painting service with premium quality paints and smooth finish.\",\r\n//   \"price\": 5000,\r\n//   \"location\": \"Rangpur\",\r\n//   \"categoryId\": \"63fa4b50-33f0-47a0-9789-6f3a279c4c4d\"\r\n// }",
+              "raw": "{\n  \"name\": \"Fan Installation & Repair\",\n  \"description\": \"Professional ceiling fan installation, repair, and replacement services for homes and offices.\",\n  \"price\": 800,\n  \"location\": \"Dhaka\",\n  \"categoryId\": \"afa42997-e4f6-4c9b-8a0c-756b4439b72b\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -258,14 +258,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/services/rgegr",
+              "raw": "{{base_url}}/api/services/:id",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "services",
-                "rgegr"
+                ":id"
               ]
             }
           },
@@ -312,7 +312,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"activeStatus\": \"ACTIVE\"  // ACTIVE or BLOCKED\r\n}",
+              "raw": "{\n  \"activeStatus\": \"ACTIVE\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -348,6 +348,54 @@
                 }
               }
             },
+            "url": {
+              "raw": "{{base_url}}/api/admin/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Bookings (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/bookings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{base_url}}/api/admin/categories",
               "host": [
@@ -479,7 +527,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"status\": \"COMPLETED\"  // \"ACCEPTED\", \"DECLINED\", IN_PROGRESS, COMPLETED\r\n}\r\n\r\n",
+              "raw": "{\n  \"status\": \"ACCEPTED\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -674,6 +722,91 @@
                 "api",
                 "payments",
                 "e057a131-7f8e-44fd-a3e8-e27ab4003ff4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Success (Callback)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/payments/success",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "success"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Fail (Callback)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/payments/fail",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "fail"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Cancel (Callback)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/payments/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment IPN (Webhook)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tran_id\": \"TXN123456\",\n  \"status\": \"VALID\",\n  \"amount\": 100\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payments/ipn",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "ipn"
               ]
             }
           },

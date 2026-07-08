@@ -20,6 +20,7 @@ export const validate = (schema: ZodType) => {
           throw new AppError(
             httpStatus.BAD_REQUEST,
             errorDetails.map((e) => `${e.path}: ${e.message}`).join(" | "),
+            errorDetails,
           );
         }
         next(error);
