@@ -49,17 +49,26 @@ const getAllServicesFromDB = async (query : IServiceQuery) => {
   }
 
   if (rating) {
-    andConditions.push({
-      bookings: {
-        some: {
-          review: {
-            rating: {
-              gte: parseInt(rating as string),
-            },
-          },
-        },
-      },
-    });
+    const minRating = Number(rating);
+
+    if (Number.isNaN(minRating)) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Rating must be a valid number",
+      );
+    }
+
+    const qualifiedRows = await prisma.$queryRaw<{ id: string }[]>`
+      SELECT s."id"
+      FROM "Service" s
+      INNER JOIN "Booking" b ON b."serviceId" = s."id"
+      INNER JOIN "Review" r ON r."bookingId" = b."id"
+      GROUP BY s."id"
+      HAVING AVG(r."rating") >= ${minRating}
+    `;
+
+    const qualifiedIds = qualifiedRows.map((row) => row.id);
+    andConditions.push({ id: { in: qualifiedIds } });
   }
 
   if (minPrice || maxPrice) {
@@ -85,11 +94,6 @@ const getAllServicesFromDB = async (query : IServiceQuery) => {
         select: {
           id: true,
           name: true,
-          technicianProfile: {
-            select: {
-              availability: true,
-            },
-          },
         },
       },
     },

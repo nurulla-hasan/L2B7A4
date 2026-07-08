@@ -64,32 +64,26 @@ const getAllTechniciansFromDB = async (query: ItechnicianQuery) => {
   }
 
   if (rating) {
-    const allTechs = await prisma.user.findMany({
-      where: { role: Role.TECHNICIAN },
-      select: {
-        id: true,
-        technicianBookings: {
-          select: {
-            review: {
-              select: { rating: true },
-            },
-          },
-        },
-      },
-    });
+    const minRating = Number(rating);
 
-    const minRating = parseInt(rating as string);
-    const qualifiedIds = allTechs
-      .filter((tech) => {
-        const ratings = tech.technicianBookings
-          .filter((b) => b.review !== null)
-          .map((b) => b.review!.rating);
-        if (ratings.length === 0) return false;
-        const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
-        return avg >= minRating;
-      })
-      .map((tech) => tech.id);
+    if (Number.isNaN(minRating)) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Rating must be a valid number",
+      );
+    }
 
+    const qualifiedRows = await prisma.$queryRaw<{ id: string }[]>`
+    SELECT u."id"
+    FROM "User" u
+    INNER JOIN "Booking" b ON b."technicianId" = u."id"
+    INNER JOIN "Review" r ON r."bookingId" = b."id"
+    WHERE u."role" = 'TECHNICIAN'
+    GROUP BY u."id"
+    HAVING AVG(r."rating") >= ${minRating}
+  `;
+
+    const qualifiedIds = qualifiedRows.map((row) => row.id);
     andConditions.push({ id: { in: qualifiedIds } });
   }
 
@@ -112,6 +106,14 @@ const getAllTechniciansFromDB = async (query: ItechnicianQuery) => {
           experience: true,
           pricing: true,
           availability: true,
+        },
+      },
+      services: {
+        select: {
+          id: true,
+          name: true,
+          location: true,
+          price: true,
         },
       },
     },
@@ -138,6 +140,14 @@ const getSingleTechnicianFromDB = async (id: string) => {
           experience: true,
           pricing: true,
           availability: true,
+        },
+      },
+      services: {
+        select: {
+          id: true,
+          name: true,
+          location: true,
+          price: true,
         },
       },
     },
@@ -262,7 +272,10 @@ const updateBookingStatusFromDB = async (
   }
 
   if (booking.technicianId !== userId) {
-    throw new AppError(httpStatus.FORBIDDEN, "You can only update your own bookings!");
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You can only update your own bookings!",
+    );
   }
 
   const validTransitions: Record<string, string[]> = {
