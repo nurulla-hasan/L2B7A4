@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "5904a272-8545-4dc7-b650-77bb349f97bf",
+    "_postman_id": "9765f1d3-b170-44c9-8ecb-83867426872c",
     "name": "FixIt Now",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "44237160"
@@ -169,7 +169,7 @@
                 },
                 {
                   "key": "rating",
-                  "value": "0",
+                  "value": "4",
                   "type": "text",
                   "disabled": true
                 },
@@ -196,14 +196,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/services/50db7302-4cb0-4ad9-a0f2-656d3b9140f6",
+              "raw": "{{base_url}}/api/services/60b5dfa2-270d-4b35-abd5-5dac5f94014a",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "services",
-                "50db7302-4cb0-4ad9-a0f2-656d3b9140f6"
+                "60b5dfa2-270d-4b35-abd5-5dac5f94014a"
               ]
             }
           },
@@ -520,7 +520,7 @@
                 },
                 {
                   "key": "rating",
-                  "value": "4",
+                  "value": "5",
                   "disabled": true
                 },
                 {
@@ -530,7 +530,7 @@
                 },
                 {
                   "key": "maxPrice",
-                  "value": "3000",
+                  "value": "60",
                   "disabled": true
                 }
               ]
@@ -544,14 +544,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/technicians/325702d3-cb54-41a4-b6d9-bc056e3ea82a",
+              "raw": "{{base_url}}/api/technicians/aa37e57f-708a-4690-9019-0631c0922651",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "technicians",
-                "325702d3-cb54-41a4-b6d9-bc056e3ea82a"
+                "aa37e57f-708a-4690-9019-0631c0922651"
               ]
             }
           },
@@ -767,7 +767,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"bookingId\": \"5f3ec9bd-864c-4bd7-ab1a-f9d6316dcab7\",\r\n}",
+              "raw": "{\r\n  \"bookingId\": \"5f3ec9bd-864c-4bd7-ab1a-f9d6316dcab7\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
