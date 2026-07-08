@@ -64,13 +64,13 @@ const createBookingIntoDB = async (userId: string, data: ICreateBooking) => {
 
   if (availability && Object.keys(availability).length > 0) {
     const dayNames = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
     ];
     const dayOfWeek = dayNames[bookingDate.getDay()];
     const availableSlots = availability[dayOfWeek];

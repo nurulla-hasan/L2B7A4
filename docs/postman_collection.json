@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "f3fb43d4-a063-4677-aa66-d867a939a8c0",
+    "_postman_id": "5904a272-8545-4dc7-b650-77bb349f97bf",
     "name": "FixIt Now",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "44237160"
@@ -278,6 +278,11 @@
                 "api",
                 "services",
                 ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
               ]
             }
           },
@@ -762,7 +767,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"bookingId\": \"5f3ec9bd-864c-4bd7-ab1a-f9d6316dcab7\",\r\n  \"amount\": 97\r\n}",
+              "raw": "{\r\n  \"bookingId\": \"5f3ec9bd-864c-4bd7-ab1a-f9d6316dcab7\",\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -889,7 +894,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tran_id\": \"TXN123456\",\n  \"status\": \"VALID\",\n  \"amount\": 100\n}"
+              "raw": "{\n  \"tran_id\": \"SSLCZ_123456789\",\n  \"val_id\": \"VALIDATION_ID_FROM_SSLCOMMERZ\",\n  \"status\": \"VALID\",\n  \"amount\": 100\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/payments/ipn",

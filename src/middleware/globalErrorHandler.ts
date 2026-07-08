@@ -48,17 +48,21 @@ export const globalErrorHandler = (
     success: false,
     statusCode,
     message,
+    errorDetails: err.errorDetails || [
+      {
+        path: "",
+        message,
+      },
+    ],
   };
-
-  // Pass through structured errorDetails (e.g., Zod validation errors)
-  if (err.errorDetails) {
-    errorResponse.errorDetails = err.errorDetails;
-  }
 
   if (config.node_env === "development") {
     errorResponse.stack = err.stack;
-    if (!errorResponse.errorDetails && err.meta) {
-      errorResponse.errorDetails = [{ path: "database", message: JSON.stringify(err.meta) }];
+    if (err.meta) {
+      errorResponse.errorDetails = [
+        ...(errorResponse.errorDetails || []),
+        { path: "database", message: JSON.stringify(err.meta) },
+      ];
     }
   }
 
