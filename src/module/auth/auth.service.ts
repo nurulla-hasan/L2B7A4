@@ -19,7 +19,10 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
   }
 
   if (user.activeStatus === "BLOCKED") {
-    throw new AppError(httpStatus.FORBIDDEN, "Your account has been blocked. Please contact support.");
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Your account has been blocked. Please contact support.",
+    );
   }
 
   const isPasswordMatched = await bcrypt.compare(password, user.password);
@@ -53,7 +56,10 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
   const { name, email, password, role } = payload;
 
   if (role !== "CUSTOMER" && role !== "TECHNICIAN") {
-    throw new AppError(httpStatus.BAD_REQUEST, "Role must be either CUSTOMER or TECHNICIAN");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Role must be either CUSTOMER or TECHNICIAN",
+    );
   }
 
   const existingUser = await prisma.user.findUnique({
@@ -86,7 +92,7 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
         experience: "",
         pricing: 0,
       },
-    })    
+    });
   }
 
   const jwtPayload = {
@@ -116,6 +122,42 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
       email: user.email,
       role: user.role,
     },
+  };
+};
+
+const refreshTokenIntoDB = async (refreshToken: string) => {
+  const validRefreshToken = jwtUtils.verifyToken(
+    refreshToken,
+    config.jwt_refresh_secret,
+  );
+
+  if (!validRefreshToken) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Refresh token is invalid");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: validRefreshToken.id,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
+
+  return {
+    accessToken: jwtUtils.createToken(
+      jwtPayload,
+      config.jwt_access_secret,
+      config.jwt_access_expires_in,
+    ),
   };
 };
 
@@ -153,5 +195,6 @@ const getMeFromDB = async (userId: string) => {
 export const authService = {
   loginUserIntoDB,
   registerUserIntoDB,
+  refreshTokenIntoDB,
   getMeFromDB,
 };
