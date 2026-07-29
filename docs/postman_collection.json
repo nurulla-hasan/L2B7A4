@@ -21,7 +21,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"golap@technician.com\",\n  \"password\": \"111111\"\n}"
+              "raw": "{\n  \"email\": \"golap@technician.com\",\n  \"password\": \"111111\"\n}\n\n\n// {\n//   \"email\": \"admin@fixitnow.com\",\n//   \"password\": \"admin123\"\n// }\n"
             },
             "url": {
               "raw": "{{base_url}}/api/auth/login",
