@@ -94,6 +94,34 @@
           "response": []
         },
         {
+          "name": "Refresh AccessToken",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMyMWI3NDUyLWM0NDItNGRiMC04YjA5LWE3NWZlMGIxOTBlMCIsIm5hbWUiOiJHb2xhcCBUZWNobmljaWFuIiwiZW1haWwiOiJnb2xhcEB0ZWNobmljaWFuLmNvbSIsInJvbGUiOiJURUNITklDSUFOIiwiaWF0IjoxNzg1Mjk3MjgzLCJleHAiOjE3ODU5MDIwODN9.kbsDkZjsz0GS2EumUU3cpAy8o2sYqvACVFX22LahBsI\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get Me",
           "request": {
             "method": "GET",

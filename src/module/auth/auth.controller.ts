@@ -46,7 +46,7 @@ const refreshToken = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: "Refresh token successful",
+    message: "Access token refreshed successfully",
     data: result,
   });
 });
