@@ -8,6 +8,7 @@ import { Role } from "../../../generated/prisma/enums";
 const router = Router()
 
 router.get('/', serviceController.getAllService)
+router.get('/my-services', auth(Role.TECHNICIAN), serviceController.getMyServices)
 router.get('/:id', serviceController.getSingleService)
 router.post('/', auth(Role.TECHNICIAN), validate(serviceValidation.createServiceSchema), serviceController.createService)
 router.put('/:id', auth(Role.TECHNICIAN), validate(serviceValidation.updateServiceSchema), serviceController.updateService)

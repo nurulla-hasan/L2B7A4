@@ -67,10 +67,23 @@ const deleteService = catchAsync(async (req, res) => {
   });
 });
 
+const getMyServices = catchAsync(async (req, res) => {
+  const result = await serviceServices.getMyServicesFromDB(
+    req.user?.id as string,
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Your services retrieved successfully",
+    data: result,
+  });
+});
+
 export const serviceController = {
   getAllService,
   getSingleService,
   createService,
   updateService,
   deleteService,
+  getMyServices,
 };

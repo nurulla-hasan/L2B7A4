@@ -198,10 +198,32 @@ const deleteServiceFromDB = async (userId: string, id: string) => {
   return result;
 };
 
+const getMyServicesFromDB = async (userId: string) => {
+  const result = await prisma.service.findMany({
+    where: {
+      technicianId: userId,
+    },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      name: "desc",
+    },
+  });
+
+  return result;
+};
+
 export const serviceServices = {
   getAllServicesFromDB,
   getSingleServiceFromDB,
   createServiceIntoDB,
   updateServiceFromDB,
   deleteServiceFromDB,
+  getMyServicesFromDB,
 };
