@@ -7,9 +7,9 @@ import { Role } from "../../../generated/prisma/enums";
 
 const router = Router();
 
-router.get("/success", paymentController.paymentSuccess);
-router.get("/fail", paymentController.paymentFail);
-router.get("/cancel", paymentController.paymentCancel);
+router.post("/success", paymentController.paymentSuccess);
+router.post("/fail", paymentController.paymentFail);
+router.post("/cancel", paymentController.paymentCancel);
 router.post("/ipn", paymentController.paymentIpn);
 
 

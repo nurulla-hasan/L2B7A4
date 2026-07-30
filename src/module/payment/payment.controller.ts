@@ -19,7 +19,8 @@ const createPayment = catchAsync(async (req, res) => {
 });
 
 const paymentSuccess = catchAsync(async (req, res) => {
-  const { tranId, val_id } = req.query;
+  const { tranId } = req.query;
+  const { val_id } = req.body;
 
   if (!tranId) {
     res.redirect(`${config.app_url}/payment/failed`);
