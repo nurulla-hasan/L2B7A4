@@ -257,7 +257,6 @@ const paymentIpnIntoDB = async (ipnData: Record<string, any>) => {
         });
       });
 
-      console.log(`[SSLCommerz IPN] Payment completed: ${tran_id}`);
       return { message: "Payment completed via IPN" };
     } else {
       // If validation fails, mark as failed
@@ -270,7 +269,6 @@ const paymentIpnIntoDB = async (ipnData: Record<string, any>) => {
           where: { id: payment.id },
           data: { status: PaymentStatus.FAILED },
         });
-        console.log(`[SSLCommerz IPN] Payment failed via IPN: ${tran_id}`);
       }
 
       return { message: "Payment validation failed" };
