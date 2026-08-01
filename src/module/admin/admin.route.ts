@@ -9,8 +9,18 @@ import { adminController } from "./admin.controller";
 
 const router = Router();
 
+router.get(
+  "/dashboard/stats",
+  auth(Role.ADMIN),
+  adminController.getDashboardStats,
+);
 router.get("/users", auth(Role.ADMIN), adminController.getAllUsers);
-router.patch("/users/:id", auth(Role.ADMIN), validate(adminValidation.updateUserStatusSchema), adminController.updateUserStatus);
+router.patch(
+  "/users/:id",
+  auth(Role.ADMIN),
+  validate(adminValidation.updateUserStatusSchema),
+  adminController.updateUserStatus,
+);
 router.get("/bookings", auth(Role.ADMIN), adminController.getAllBookings);
 
 router.get(
@@ -18,8 +28,22 @@ router.get(
   auth(Role.ADMIN),
   categoryController.getAllCategories,
 );
-router.post("/categories", auth(Role.ADMIN), validate(categoryValidation.createCategorySchema), categoryController.createCategory);
-router.patch("/categories/:id", auth(Role.ADMIN), validate(categoryValidation.updateCategorySchema), categoryController.updateCategory);
-router.delete("/categories/:id", auth(Role.ADMIN), categoryController.deleteCategory);
+router.post(
+  "/categories",
+  auth(Role.ADMIN),
+  validate(categoryValidation.createCategorySchema),
+  categoryController.createCategory,
+);
+router.patch(
+  "/categories/:id",
+  auth(Role.ADMIN),
+  validate(categoryValidation.updateCategorySchema),
+  categoryController.updateCategory,
+);
+router.delete(
+  "/categories/:id",
+  auth(Role.ADMIN),
+  categoryController.deleteCategory,
+);
 
 export const adminRoutes = router;

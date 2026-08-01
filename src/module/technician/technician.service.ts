@@ -192,9 +192,21 @@ const updateProfileIntoDB = async (userId: string, data: IUpdateProfile) => {
     );
   }
 
-  const result = await prisma.technicianProfile.update({
-    where: { userId },
-    data,
+  // `name` lives on User; the rest on TechnicianProfile
+  const { name, ...profileData } = data;
+
+  const result = await prisma.$transaction(async (tx) => {
+    if (name) {
+      await tx.user.update({
+        where: { id: userId },
+        data: { name },
+      });
+    }
+
+    return tx.technicianProfile.update({
+      where: { userId },
+      data: profileData,
+    });
   });
 
   return result;
@@ -302,6 +314,105 @@ const updateBookingStatusFromDB = async (
   return result;
 };
 
+const getDashboardStatsFromDB = async (userId: string) => {
+  const [
+    totalBookings,
+    bookingStatusCounts,
+    activeServices,
+    earningsAgg,
+    ratingAgg,
+    upcomingBookings,
+    recentReviews,
+  ] = await Promise.all([
+    prisma.booking.count({ where: { technicianId: userId } }),
+    prisma.booking.groupBy({
+      by: ["status"],
+      where: { technicianId: userId },
+      _count: { _all: true },
+    }),
+    prisma.service.count({ where: { technicianId: userId } }),
+    prisma.payment.aggregate({
+      where: {
+        status: "COMPLETED",
+        booking: { technicianId: userId },
+      },
+      _sum: { amount: true },
+    }),
+    prisma.review.aggregate({
+      where: { booking: { technicianId: userId } },
+      _avg: { rating: true },
+      _count: { rating: true },
+    }),
+    prisma.booking.findMany({
+      where: {
+        technicianId: userId,
+        scheduleDate: { gte: new Date() },
+        status: {
+          in: ["REQUESTED", "ACCEPTED", "PAID", "IN_PROGRESS"],
+        },
+      },
+      orderBy: { scheduleDate: "asc" },
+      take: 5,
+      include: {
+        customer: { select: { id: true, name: true, email: true } },
+        service: { select: { id: true, name: true, price: true } },
+      },
+    }),
+    prisma.review.findMany({
+      where: { booking: { technicianId: userId } },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      include: {
+        booking: {
+          select: {
+            id: true,
+            service: { select: { name: true } },
+            customer: { select: { id: true, name: true } },
+          },
+        },
+      },
+    }),
+  ]);
+
+  const statusCount = (status: string) =>
+    bookingStatusCounts.find((item) => item.status === status)?._count._all ?? 0;
+
+  const averageRating = ratingAgg._avg.rating
+    ? Number(Number(ratingAgg._avg.rating).toFixed(1))
+    : 0;
+
+  return {
+    totals: {
+      bookings: totalBookings,
+      // Needs the technician's attention: decide on requests, start paid work
+      pendingBookings: statusCount("REQUESTED") + statusCount("PAID"),
+      activeServices,
+      completedBookings: statusCount("COMPLETED"),
+      earnings: Number(earningsAgg._sum.amount ?? 0),
+      averageRating,
+      reviewCount: ratingAgg._count.rating,
+    },
+    bookingStatusCounts: {
+      REQUESTED: statusCount("REQUESTED"),
+      ACCEPTED: statusCount("ACCEPTED"),
+      DECLINED: statusCount("DECLINED"),
+      CANCELLED: statusCount("CANCELLED"),
+      PAID: statusCount("PAID"),
+      IN_PROGRESS: statusCount("IN_PROGRESS"),
+      COMPLETED: statusCount("COMPLETED"),
+    },
+    upcomingAppointments: upcomingBookings,
+    recentReviews: recentReviews.map((review) => ({
+      id: review.id,
+      rating: review.rating,
+      comment: review.comment,
+      createdAt: review.createdAt,
+      customerName: review.booking.customer.name,
+      serviceName: review.booking.service.name,
+    })),
+  };
+};
+
 export const technicianService = {
   getAllTechniciansFromDB,
   getSingleTechnicianFromDB,
@@ -309,4 +420,5 @@ export const technicianService = {
   updateAvailabilityIntoDB,
   getMyBookingsFromDB,
   updateBookingStatusFromDB,
+  getDashboardStatsFromDB,
 };

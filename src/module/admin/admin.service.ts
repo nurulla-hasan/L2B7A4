@@ -62,8 +62,90 @@ const getAllBookingsFromDB = async () => {
   return result;
 };
 
+const getDashboardStatsFromDB = async () => {
+  const [
+    userRoleCounts,
+    serviceCount,
+    categoryCount,
+    bookingStatusCounts,
+    revenueAgg,
+    recentBookings,
+    recentUsers,
+  ] = await Promise.all([
+    prisma.user.groupBy({
+      by: ["role"],
+      _count: { _all: true },
+    }),
+    prisma.service.count(),
+    prisma.category.count(),
+    prisma.booking.groupBy({
+      by: ["status"],
+      _count: { _all: true },
+    }),
+    prisma.payment.aggregate({
+      where: { status: "COMPLETED" },
+      _sum: { amount: true },
+    }),
+    prisma.booking.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      include: {
+        customer: { select: { id: true, name: true, email: true } },
+        technician: { select: { id: true, name: true, email: true } },
+        service: { select: { id: true, name: true, price: true } },
+      },
+    }),
+    prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        activeStatus: true,
+        createdAt: true,
+      },
+    }),
+  ]);
+
+  const roleCount = (role: string) =>
+    userRoleCounts.find((item) => item.role === role)?._count._all ?? 0;
+
+  const statusCount = (status: string) =>
+    bookingStatusCounts.find((item) => item.status === status)?._count._all ?? 0;
+
+  return {
+    totals: {
+      users: userRoleCounts.reduce((sum, item) => sum + item._count._all, 0),
+      customers: roleCount("CUSTOMER"),
+      technicians: roleCount("TECHNICIAN"),
+      admins: roleCount("ADMIN"),
+      services: serviceCount,
+      categories: categoryCount,
+      bookings: bookingStatusCounts.reduce(
+        (sum, item) => sum + item._count._all,
+        0,
+      ),
+      revenue: Number(revenueAgg._sum.amount ?? 0),
+    },
+    bookingStatusCounts: {
+      REQUESTED: statusCount("REQUESTED"),
+      ACCEPTED: statusCount("ACCEPTED"),
+      DECLINED: statusCount("DECLINED"),
+      CANCELLED: statusCount("CANCELLED"),
+      PAID: statusCount("PAID"),
+      IN_PROGRESS: statusCount("IN_PROGRESS"),
+      COMPLETED: statusCount("COMPLETED"),
+    },
+    recentBookings,
+    recentUsers,
+  };
+};
+
 export const adminService = {
   getAllUsersFromDB,
   updateUserStatusIntoDB,
   getAllBookingsFromDB,
+  getDashboardStatsFromDB,
 };

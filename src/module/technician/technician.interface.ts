@@ -1,6 +1,7 @@
 import { UserWhereInput } from "../../../generated/prisma/models";
 
 export interface IUpdateProfile {
+  name?: string;
   skills?: string;
   experience?: string;
   pricing?: number;

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const updateProfileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").optional(),
   skills: z.string().min(2, "Skills must be at least 2 characters").optional(),
   experience: z.string().min(2, "Experience must be at least 2 characters").optional(),
   pricing: z.number().positive("Pricing must be a positive number").optional(),

@@ -120,6 +120,7 @@ const getMyBookingsFromDB = async (userId: string) => {
           id: true,
           name: true,
           price: true,
+          description: true,
         },
       },
 
@@ -131,10 +132,28 @@ const getMyBookingsFromDB = async (userId: string) => {
         },
       },
 
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+
       payment: {
         select: {
           id: true,
           status: true,
+          amount: true,
+          method: true,
+        },
+      },
+
+      review: {
+        select: {
+          id: true,
+          rating: true,
+          comment: true,
         },
       },
     },
