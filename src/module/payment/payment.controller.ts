@@ -23,7 +23,7 @@ const paymentSuccess = catchAsync(async (req, res) => {
   const { val_id } = req.body;
 
   if (!tranId) {
-    res.redirect(`${config.app_url}/payment/failed`);
+    res.redirect(`${config.app_url}/payment/cancel`);
     return;
   }
 
@@ -40,7 +40,7 @@ const paymentFail = catchAsync(async (req, res) => {
     await paymentService.paymentFailIntoDB(tranId as string);
   }
 
-  res.redirect(`${config.app_url}/payment/failed`);
+  res.redirect(`${config.app_url}/payment/cancel`);
 });
 
 const paymentCancel = catchAsync(async (req, res) => {
@@ -50,7 +50,7 @@ const paymentCancel = catchAsync(async (req, res) => {
     await paymentService.paymentFailIntoDB(tranId as string);
   }
 
-  res.redirect(`${config.app_url}/payment/cancelled`);
+  res.redirect(`${config.app_url}/payment/cancel`);
 });
 
 const paymentIpn = catchAsync(async (req, res) => {
