@@ -1,4 +1,4 @@
-import { ActiveStatus } from "../../../generated/prisma/enums";
+import { ActiveStatus, Role } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import AppError from "../../utils/AppError";
 import httpStatus from "http-status";
@@ -26,7 +26,10 @@ const updateUserStatusIntoDB = async (
   activeStatus: ActiveStatus,
 ) => {
   if (!Object.values(ActiveStatus).includes(activeStatus)) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Invalid status! Use ACTIVE or BLOCKED");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Invalid status! Use ACTIVE or BLOCKED",
+    );
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -34,11 +37,17 @@ const updateUserStatusIntoDB = async (
     throw new AppError(httpStatus.NOT_FOUND, "User not found!");
   }
 
+  if (user.role === Role.ADMIN) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You cannot block or unblock an admin user!",
+    );
+  }
+
   const result = await prisma.user.update({
     where: { id: userId },
-    data: { activeStatus: activeStatus },
+    data: { activeStatus },
   });
-
   return result;
 };
 
@@ -113,7 +122,8 @@ const getDashboardStatsFromDB = async () => {
     userRoleCounts.find((item) => item.role === role)?._count._all ?? 0;
 
   const statusCount = (status: string) =>
-    bookingStatusCounts.find((item) => item.status === status)?._count._all ?? 0;
+    bookingStatusCounts.find((item) => item.status === status)?._count._all ??
+    0;
 
   return {
     totals: {
@@ -143,9 +153,19 @@ const getDashboardStatsFromDB = async () => {
   };
 };
 
+const getAllContactMessagesFromDB = async () => {
+  const result = await prisma.contactMessage.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return result;
+};
+
 export const adminService = {
   getAllUsersFromDB,
   updateUserStatusIntoDB,
   getAllBookingsFromDB,
   getDashboardStatsFromDB,
+  getAllContactMessagesFromDB,
 };

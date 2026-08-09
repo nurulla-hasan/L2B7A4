@@ -22,6 +22,7 @@ router.patch(
   adminController.updateUserStatus,
 );
 router.get("/bookings", auth(Role.ADMIN), adminController.getAllBookings);
+router.get("/messages", auth(Role.ADMIN), adminController.getAllContactMessages);
 
 router.get(
   "/categories",

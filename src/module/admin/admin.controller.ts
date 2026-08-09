@@ -51,9 +51,21 @@ const getDashboardStats = catchAsync(async (_req: Request, res: Response) => {
   });
 });
 
+const getAllContactMessages = catchAsync(async (_req: Request, res: Response) => {
+  const result = await adminService.getAllContactMessagesFromDB();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Contact messages retrieved successfully",
+    data: result,
+  });
+});
+
 export const adminController = {
     getAllUsers,
     updateUserStatus,
     getAllBookings,
     getDashboardStats,
+    getAllContactMessages,
 }
