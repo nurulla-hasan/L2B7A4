@@ -62,9 +62,20 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
+const updateProfile = catchAsync(async (req, res) => {
+  const result = await authService.updateProfileIntoDB(req.user.id, req.body);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Profile updated successfully",
+    data: result,
+  });
+});
+
 export const authController = {
   loginUser,
   registerUser,
   refreshToken,
-  getMe
+  getMe,
+  updateProfile,
 };

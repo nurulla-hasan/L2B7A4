@@ -22,6 +22,13 @@ export interface IServiceFilters {
   searchTerm?: string;
 }
 
+export type ServiceSortBy =
+  | "price_asc"
+  | "price_desc"
+  | "rating_desc"
+  | "newest"
+  | "name_asc";
+
 export interface IServiceQuery extends ServiceWhereInput {
     searchTerm?: string
     type?: string
@@ -29,6 +36,7 @@ export interface IServiceQuery extends ServiceWhereInput {
     rating?: string
     minPrice?: string
     maxPrice?: string
+    sortBy?: ServiceSortBy
     page?: string
     limit?: string
 } 

@@ -13,6 +13,7 @@ import { technicianPublicRoutes, technicianManagementRoutes } from './module/tec
 import { bookingRoutes } from './module/booking/booking.route';
 import { paymentRoutes } from './module/payment/payment.route';
 import { reviewRoutes } from './module/review/review.route';
+import { contactRoutes } from './module/contact/contact.route';
 
 const app : Application = express();
 
@@ -43,10 +44,10 @@ app.use("/api/technician", technicianManagementRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/contact", contactRoutes);
 
 // admin route
 app.use("/api/admin", adminRoutes);
-
 
 
 

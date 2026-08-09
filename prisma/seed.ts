@@ -62,11 +62,66 @@ const seed = async () => {
       console.log(`  ⏭️  Admin skipped (already exists): ${adminEmail}`);
     }
 
+    // ─── Demo Customer ───────────────────────────────────────────
+    const customerEmail = "customer@fixitnow.com";
+    const customerPassword = "customer123";
+
+    const existingCustomer = await prisma.user.findUnique({
+      where: { email: customerEmail },
+    });
+
+    if (!existingCustomer) {
+      const hashedPassword = await bcrypt.hash(customerPassword, 12);
+      await prisma.user.create({
+        data: {
+          name: "Demo Customer",
+          email: customerEmail,
+          password: hashedPassword,
+          role: Role.CUSTOMER,
+        },
+      });
+      console.log(`  ✅ Customer created: ${customerEmail} / ${customerPassword}`);
+    } else {
+      console.log(`  ⏭️  Customer skipped (already exists): ${customerEmail}`);
+    }
+
+    // ─── Demo Technician ─────────────────────────────────────────
+    const technicianEmail = "technician@fixitnow.com";
+    const technicianPassword = "technician123";
+
+    const existingTechnician = await prisma.user.findUnique({
+      where: { email: technicianEmail },
+    });
+
+    if (!existingTechnician) {
+      const hashedPassword = await bcrypt.hash(technicianPassword, 12);
+      const technician = await prisma.user.create({
+        data: {
+          name: "Demo Technician",
+          email: technicianEmail,
+          password: hashedPassword,
+          role: Role.TECHNICIAN,
+        },
+      });
+      await prisma.technicianProfile.create({
+        data: {
+          userId: technician.id,
+          skills: "Plumbing, Electrical, General Repair",
+          experience: "5+ years of professional experience",
+          pricing: 500,
+        },
+      });
+      console.log(`  ✅ Technician created: ${technicianEmail} / ${technicianPassword}`);
+    } else {
+      console.log(`  ⏭️  Technician skipped (already exists): ${technicianEmail}`);
+    }
+
     console.log("✅ Seeding complete!");
     console.log("────────────────────────────");
-    console.log("📋 Admin Credentials:");
-    console.log("   Email   :", adminEmail);
-    console.log("   Password:", adminPassword);
+    console.log("📋 Demo Credentials:");
+    console.log("   Admin:      admin@fixitnow.com / admin123");
+    console.log("   Customer:   customer@fixitnow.com / customer123");
+    console.log("   Technician: technician@fixitnow.com / technician123");
     console.log("────────────────────────────");
   } catch (error) {
     console.error("❌ Seed failed:", error);

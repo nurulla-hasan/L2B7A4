@@ -4,6 +4,34 @@ import AppError from "../../utils/AppError";
 import { ICreateReview } from "./review.interface";
 import httpStatus from "http-status";
 
+const getReviewsByServiceFromDB = async (serviceId: string) => {
+  const reviews = await prisma.review.findMany({
+    where: {
+      booking: {
+        serviceId,
+      },
+    },
+    include: {
+      booking: {
+        select: {
+          id: true,
+          customer: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return reviews;
+};
+
 const createReviewIntoDB = async (userId: string, data: ICreateReview) => {
   const booking = await prisma.booking.findUnique({
     where: {
@@ -55,4 +83,5 @@ const createReviewIntoDB = async (userId: string, data: ICreateReview) => {
 
 export const reviewService = {
   createReviewIntoDB,
+  getReviewsByServiceFromDB,
 };

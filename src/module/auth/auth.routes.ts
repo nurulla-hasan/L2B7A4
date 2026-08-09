@@ -10,6 +10,7 @@ router.post("/login", validate(authValidation.loginSchema), authController.login
 router.post("/register", validate(authValidation.registerSchema), authController.registerUser)
 router.post("/refresh-token", validate(authValidation.refreshTokenSchema), authController.refreshToken)
 router.get("/me", auth(), authController.getMe)
+router.patch("/profile", auth(), authController.updateProfile)
 
 
 export const authRoutes = router

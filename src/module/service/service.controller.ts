@@ -7,10 +7,34 @@ const getAllService = catchAsync(async (req, res) => {
   const result = await serviceServices.getAllServicesFromDB(
     req.query as Record<string, unknown>,
   );
+
+  // Handle both old format (array) and new format ({ data, meta })
+  if (Array.isArray(result)) {
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Services retrieved successfully",
+      data: result,
+    });
+  } else {
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Services retrieved successfully",
+      data: result.data,
+      meta: result.meta,
+    });
+  }
+});
+
+const getRelatedServices = catchAsync(async (req, res) => {
+  const result = await serviceServices.getRelatedServicesFromDB(
+    req.params.id as string,
+  );
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: "Services retrieved successfully",
+    message: "Related services retrieved successfully",
     data: result,
   });
 });
@@ -86,4 +110,5 @@ export const serviceController = {
   updateService,
   deleteService,
   getMyServices,
+  getRelatedServices,
 };
