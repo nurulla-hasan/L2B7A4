@@ -6,7 +6,7 @@ import httpStatus from "http-status";
 const getAllCategoriesFromDB = async () => {
     const categories = await prisma.category.findMany({
         orderBy: {
-            name: "desc"
+            createdAt: "desc"
         }
     });
 

@@ -295,7 +295,7 @@ const getMyServicesFromDB = async (userId: string) => {
       },
     },
     orderBy: {
-      name: "desc",
+      createdAt: "desc",
     },
   });
 
