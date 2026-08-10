@@ -1,17 +1,17 @@
-
-
 model User {
   id           String       @id @default(uuid())
   name         String       @db.VarChar(255)
   email        String       @unique
-  password     String
+  password     String?
+  googleId     String?      @unique
+  authProvider AuthProvider @default(CREDENTIAL)
   role         Role         @default(CUSTOMER)
   activeStatus ActiveStatus @default(ACTIVE)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  technicianProfile TechnicianProfile?
-  services           Service[]       @relation("TechnicianServices")
-  customerBookings   Booking[]       @relation("CustomerBookings")
-  technicianBookings Booking[]       @relation("TechnicianBookings")
+  technicianProfile  TechnicianProfile?
+  services           Service[]          @relation("TechnicianServices")
+  customerBookings   Booking[]          @relation("CustomerBookings")
+  technicianBookings Booking[]          @relation("TechnicianBookings")
 }

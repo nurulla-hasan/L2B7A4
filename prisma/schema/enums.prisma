@@ -29,3 +29,8 @@ enum PaymentStatus {
 enum PaymentProvider {
   SSLCOMMERZ
 }
+
+enum AuthProvider {
+  GOOGLE
+  CREDENTIAL
+}

@@ -3,6 +3,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { authService } from "./auth.service";
 import AppError from "../../utils/AppError";
 import httpStatus from "http-status";
+import config from "../../config";
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await authService.loginUserIntoDB(req.body);
@@ -31,7 +32,6 @@ const loginUser = catchAsync(async (req, res) => {
 });
 
 const registerUser = catchAsync(async (req, res) => {
-  
   const result = await authService.registerUserIntoDB(req.body);
 
   sendResponse(res, {
@@ -40,8 +40,7 @@ const registerUser = catchAsync(async (req, res) => {
     message: "User created successfully",
     data: result,
   });
-
-})
+});
 
 const refreshToken = catchAsync(async (req, res) => {
   const token = req.cookies?.refreshToken ?? req.body.refreshToken;
@@ -79,10 +78,38 @@ const updateProfile = catchAsync(async (req, res) => {
   });
 });
 
+const googleLogin = catchAsync(async (req, res) => {
+
+  const result = await authService.googleLoginIntoDB(req.body);
+
+  res.cookie("accessToken", result.accessToken, {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+
+  res.cookie("refreshToken", result.refreshToken, {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Google login successful",
+    data: {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    },
+  });
+});
+
 export const authController = {
   loginUser,
   registerUser,
   refreshToken,
   getMe,
   updateProfile,
+  googleLogin,
 };

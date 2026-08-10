@@ -9,3 +9,7 @@ export interface IRegisterUser {
   password: string;
   role: "CUSTOMER" | "TECHNICIAN";
 }
+
+export interface IGoogleLogin {
+  idToken: string;
+}
