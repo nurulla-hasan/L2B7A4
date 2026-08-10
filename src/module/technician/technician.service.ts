@@ -10,7 +10,22 @@ import {
 import { Prisma } from "../../../generated/prisma/client";
 
 const getAllTechniciansFromDB = async (query: ItechnicianQuery) => {
-  const { searchTerm, location, rating, minPrice, maxPrice } = query;
+  const {
+    searchTerm,
+    location,
+    rating,
+    minPrice,
+    maxPrice,
+    page = "1",
+    limit = "12",
+  } = query;
+
+  const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
+  const limitNum = Math.min(
+    50,
+    Math.max(1, parseInt(limit as string, 10) || 12),
+  );
+  const skip = (pageNum - 1) * limitNum;
 
   const andConditions: Prisma.UserWhereInput[] = [];
 
@@ -87,39 +102,47 @@ const getAllTechniciansFromDB = async (query: ItechnicianQuery) => {
     andConditions.push({ id: { in: qualifiedIds } });
   }
 
-  const result = await prisma.user.findMany({
-    where: {
-      AND: andConditions,
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      activeStatus: true,
-      createdAt: true,
-      updatedAt: true,
-      technicianProfile: {
-        select: {
-          id: true,
-          skills: true,
-          experience: true,
-          pricing: true,
-          availability: true,
+  const [result, total] = await Promise.all([
+    prisma.user.findMany({
+      where: {
+        AND: andConditions,
+      },
+      skip,
+      take: limitNum,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        activeStatus: true,
+        createdAt: true,
+        updatedAt: true,
+        technicianProfile: {
+          select: {
+            id: true,
+            skills: true,
+            experience: true,
+            pricing: true,
+            availability: true,
+          },
+        },
+        services: {
+          select: {
+            id: true,
+            name: true,
+            location: true,
+            price: true,
+          },
         },
       },
-      services: {
-        select: {
-          id: true,
-          name: true,
-          location: true,
-          price: true,
-        },
-      },
-    },
-  });
+    }),
+    prisma.user.count({ where: { AND: andConditions } }),
+  ]);
 
-  return result;
+  return {
+    data: result,
+    meta: { page: pageNum, limit: limitNum, total },
+  };
 };
 
 const getSingleTechnicianFromDB = async (id: string) => {

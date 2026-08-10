@@ -16,4 +16,6 @@ export interface ItechnicianQuery extends UserWhereInput {
     rating?: string
     minPrice?: string
     maxPrice?: string
+    page?: string
+    limit?: string
 } 

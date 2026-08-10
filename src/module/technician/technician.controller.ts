@@ -12,7 +12,8 @@ const getAllTechnicians = catchAsync(async (req, res) => {
     success: true,
     statusCode: httpStatus.OK,
     message: "Technicians retrieved successfully",
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 
