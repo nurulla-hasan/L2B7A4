@@ -10,7 +10,7 @@ const registerSchema = z.object({
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(100, "Name must not exceed 100 characters"),
-  email: z.string().email("Invalid email format").min(1, "Email is required"),
+  email: z.email("Invalid email format").min(1, "Email is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   role: z.enum(["CUSTOMER", "TECHNICIAN"] as const, {
     error: "Role must be either CUSTOMER or TECHNICIAN",
@@ -18,7 +18,7 @@ const registerSchema = z.object({
 });
 
 const refreshTokenSchema = z.object({
-  refreshToken: z.string().min(1, "Refresh token is required"),
+  refreshToken: z.string().min(1, "Refresh token is required").optional(),
 });
 
 export const authValidation = {

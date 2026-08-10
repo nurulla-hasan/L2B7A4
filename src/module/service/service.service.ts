@@ -1,5 +1,9 @@
 import { prisma } from "../../lib/prisma";
-import { ICreateService, IServiceQuery, IUpdateService } from "./service.interface";
+import {
+  ICreateService,
+  IServiceQuery,
+  IUpdateService,
+} from "./service.interface";
 import AppError from "../../utils/AppError";
 import httpStatus from "http-status";
 import { Prisma } from "../../../generated/prisma/client";
@@ -90,7 +94,10 @@ const getAllServicesFromDB = async (query: IServiceQuery) => {
 
   // Pagination
   const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
-  const limitNum = Math.min(50, Math.max(1, parseInt(limit as string, 10) || 12));
+  const limitNum = Math.min(
+    50,
+    Math.max(1, parseInt(limit as string, 10) || 12),
+  );
   const skip = (pageNum - 1) * limitNum;
 
   // Sorting
@@ -101,14 +108,13 @@ const getAllServicesFromDB = async (query: IServiceQuery) => {
     name_asc: { name: "asc" },
   };
 
-  let orderBy: Prisma.ServiceOrderByWithRelationInput =
-    orderByMap[sortBy as string] ?? { createdAt: "desc" };
+  let orderBy: Prisma.ServiceOrderByWithRelationInput = orderByMap[
+    sortBy as string
+  ] ?? { createdAt: "desc" };
 
   // Rating sorting needs raw query — fallback to newest
-  let sortedIds: string[] | null = null;
-
   if (sortBy === "rating_desc") {
-    sortedIds = (
+    const sortedIds = (
       await prisma.$queryRaw<{ id: string }[]>`
         SELECT s."id"
         FROM "Service" s
@@ -119,27 +125,34 @@ const getAllServicesFromDB = async (query: IServiceQuery) => {
       `
     ).map((r) => r.id);
 
-    // Skip + take manually for rating sort
-    const paginatedIds = sortedIds.slice(skip, skip + limitNum);
+    // Apply the same filters as the normal query, then paginate while
+    // preserving the rating order
+    const allowedIds = new Set<string>();
+    if (sortedIds.length > 0) {
+      const filteredRows = await prisma.service.findMany({
+        where: { AND: [...andConditions, { id: { in: sortedIds } }] },
+        select: { id: true },
+      });
+      filteredRows.forEach((row) => allowedIds.add(row.id));
+    }
 
-    const [results, total] = await Promise.all([
-      prisma.service.findMany({
-        where: { id: { in: paginatedIds } },
-        include: {
-          category: { select: { id: true, name: true } },
-          technician: { select: { id: true, name: true } },
-        },
-      }),
-      prisma.service.count({ where: { AND: andConditions } }),
-    ]);
+    const filteredIds = sortedIds.filter((id) => allowedIds.has(id));
+    const total = filteredIds.length;
+    const paginatedIds = filteredIds.slice(skip, skip + limitNum);
+
+    const results = await prisma.service.findMany({
+      where: { id: { in: paginatedIds } },
+      include: {
+        category: { select: { id: true, name: true } },
+        technician: { select: { id: true, name: true } },
+      },
+    });
 
     // Maintain sort order
     const idOrder = new Map(paginatedIds.map((id, i) => [id, i]));
-    results.sort(
-      (a, b) => (idOrder.get(a.id) ?? 0) - (idOrder.get(b.id) ?? 0),
-    );
+    results.sort((a, b) => (idOrder.get(a.id) ?? 0) - (idOrder.get(b.id) ?? 0));
 
-    return { data: results, meta: { page: pageNum, limit: limitNum, total: Number(total) } };
+    return { data: results, meta: { page: pageNum, limit: limitNum, total } };
   }
 
   const [results, total] = await Promise.all([
@@ -156,7 +169,10 @@ const getAllServicesFromDB = async (query: IServiceQuery) => {
     prisma.service.count({ where: { AND: andConditions } }),
   ]);
 
-  return { data: results, meta: { page: pageNum, limit: limitNum, total: Number(total) } };
+  return {
+    data: results,
+    meta: { page: pageNum, limit: limitNum, total: Number(total) },
+  };
 };
 
 const getRelatedServicesFromDB = async (serviceId: string) => {
@@ -304,6 +320,7 @@ const getMyServicesFromDB = async (userId: string) => {
 
 export const serviceServices = {
   getAllServicesFromDB,
+  getRelatedServicesFromDB,
   getSingleServiceFromDB,
   createServiceIntoDB,
   updateServiceFromDB,

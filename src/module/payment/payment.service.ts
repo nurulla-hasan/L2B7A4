@@ -171,6 +171,22 @@ const paymentSuccessIntoDB = async (tranId: string, valId?: string) => {
   }
 
   const result = await prisma.$transaction(async (tx) => {
+    const booking = await tx.booking.findUnique({
+      where: { id: payment.bookingId },
+      select: { status: true },
+    });
+
+    if (!booking) {
+      throw new AppError(httpStatus.NOT_FOUND, "Booking not found!");
+    }
+
+    if (booking.status === "CANCELLED" || booking.status === "DECLINED") {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        `Cannot complete payment for a ${booking.status} booking!`,
+      );
+    }
+
     const updatedPayment = await tx.payment.update({
       where: { id: payment.id },
       data: {
@@ -240,6 +256,23 @@ const paymentIpnIntoDB = async (ipnData: Record<string, any>) => {
 
       if (payment.status === PaymentStatus.COMPLETED) {
         return { message: "Already completed" };
+      }
+
+      const booking = await prisma.booking.findUnique({
+        where: { id: payment.bookingId },
+        select: { status: true },
+      });
+
+      if (!booking) {
+        console.error(`[SSLCommerz IPN] Booking not found: ${payment.bookingId}`);
+        return { message: "Booking not found" };
+      }
+
+      if (booking.status === "CANCELLED" || booking.status === "DECLINED") {
+        console.error(
+          `[SSLCommerz IPN] Booking is ${booking.status}; payment not completed: ${tran_id}`,
+        );
+        return { message: `Booking is ${booking.status}; payment not completed` };
       }
 
       await prisma.$transaction(async (tx) => {

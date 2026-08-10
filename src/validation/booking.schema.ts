@@ -6,7 +6,12 @@ const createBookingSchema = z.object({
   scheduleDate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Schedule date must be in YYYY-MM-DD format"),
-  timeSlot: z.string().min(5, "Time slot is required (e.g. 09:00-12:00)"),
+  timeSlot: z
+    .string()
+    .regex(
+      /^([01]?\d|2[0-3]):[0-5]\d-([01]?\d|2[0-3]):[0-5]\d$/,
+      "Time slot must be in HH:MM-HH:MM format (e.g. 09:00-12:00)",
+    ),
 });
 
 export const bookingValidation = {
